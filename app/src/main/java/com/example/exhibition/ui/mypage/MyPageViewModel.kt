@@ -1,13 +1,13 @@
-package com.example.exhibition.ui.dashboard
+package com.example.exhibition.ui.mypage
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class MyPageViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "Hello World"
+        value = "This is mypage Fragment"
     }
     val text: LiveData<String> = _text
 }
