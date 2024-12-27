@@ -7,4 +7,7 @@ data class Place (
     val phone: String,    // 전화번호
     val exNum: String,   // 진행 중인 공연 개수
     val addressAll: String, // 전체 주소
+    val url: String,
+    val instagram: String,
+    val youtube: String
 )

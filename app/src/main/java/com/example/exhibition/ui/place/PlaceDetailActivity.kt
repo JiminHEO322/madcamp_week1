@@ -15,7 +15,10 @@ import android.net.Uri
 
 class PlaceDetailActivity : AppCompatActivity() {
 
-    private var phone: String? = null // 멤버 변수로 선언
+    private var phone: String? = null
+    private var url: String? = null
+    private var instagram: String? = null
+    private var youtube: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +26,13 @@ class PlaceDetailActivity : AppCompatActivity() {
 
         val title = intent.getStringExtra("PLACE_TITLE")
         val addressAll = intent.getStringExtra("PLACE_ADDRESS")
-        phone = intent.getStringExtra("PLACE_PHONE")
         val exNum = intent.getStringExtra("PLACE_EXNUM")
         val imageResId = intent.getIntExtra("PLACE_IMAGE", R.drawable.sample_image)
+
+        phone = intent.getStringExtra("PLACE_PHONE")
+        url = intent.getStringExtra("PLACE_URL")
+        instagram = intent.getStringExtra("PLACE_INSTAGRAM")
+        youtube = intent.getStringExtra("PLACE_YOUTUBE")
 
 
         findViewById<TextView>(R.id.detailTitleTextView).text = title
@@ -37,15 +44,28 @@ class PlaceDetailActivity : AppCompatActivity() {
 
     fun onPhoneClick(view: View) {
         val intent = Intent(Intent.ACTION_DIAL).apply {
-            data = Uri.parse(phone)
+            data = Uri.parse("tel:$phone")
         }
         startActivity(intent)
     }
 
     fun onHomeClick(view: View) {
-        val url = "https://www.sac.or.kr/"
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse(url)
+        }
+        startActivity(intent)
+    }
+
+    fun onInstgramClick(view: View) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(instagram)
+        }
+        startActivity(intent)
+    }
+
+    fun onYoutubeClick(view: View) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(youtube)
         }
         startActivity(intent)
     }

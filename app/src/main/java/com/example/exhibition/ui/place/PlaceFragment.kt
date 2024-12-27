@@ -13,6 +13,9 @@ import com.example.exhibition.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Intent
+import android.widget.EditText
+import android.text.Editable
+import android.text.TextWatcher
 
 class PlaceFragment : Fragment() {
 
@@ -21,6 +24,9 @@ class PlaceFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var adapter: PlaceAdapter
+    private lateinit var searchEditText: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,24 +39,28 @@ class PlaceFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        placeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        //val textView: TextView = binding.textHome
+        //placeViewModel.text.observe(viewLifecycleOwner) {
+        //    textView.text = it
+        //}
 
         val placeList = listOf(
-            Place(R.drawable.sample_image, "예술의 전당", "서울특별시 서초구", "1668-1352", "112", "서울특별시 서초구 남부순환로 2406"),
-            Place(R.drawable.sample_image, "전시장 B", "서울특별시 강남구", "1234-5678", "진행중", "119"),
-            Place(R.drawable.sample_image, "전시장 C", "서울특별시 송파구", "8765-4321", "진행중", "110"),
-            Place(R.drawable.sample_image, "전시장 C", "서울특별시 송파구", "8765-4321", "진행중", "110"),
-            Place(R.drawable.sample_image, "전시장 C", "서울특별시 송파구", "8765-4321", "진행중", "110"),
-            Place(R.drawable.sample_image, "전시장 C", "서울특별시 송파구", "8765-4321", "진행중", "110"),
-            Place(R.drawable.sample_image, "전시장 C", "서울특별시 송파구", "8765-4321", "진행중", "110"),
-            Place(R.drawable.sample_image, "전시장 C", "서울특별시 송파구", "8765-4321", "진행중", "110"),
-            Place(R.drawable.sample_image, "전시장 C", "서울특별시 송파구", "8765-4321", "진행중", "110"),
-            Place(R.drawable.sample_image, "전시장 C", "서울특별시 송파구", "8765-4321", "진행중", "110"),
-            Place(R.drawable.sample_image, "전시장 C", "서울특별시 송파구", "8765-4321", "진행중", "110"),
-            Place(R.drawable.sample_image, "전시장 C", "서울특별시 송파구", "8765-4321", "진행중", "110")
+            Place(R.drawable.sample_image, "예술의 전당", "서울특별시 서초구", "12345678", "112", "서울특별시 서초구 남부순환로 2406",
+                "https://www.sac.or.kr/", "https://www.instagram.com/seoul_arts_center", "https://www.youtube.com/channel/UCUn8h6aG6rCM1zvXKIuNpVQ"),
+            Place(R.drawable.sample_image, "대전 예술의 전당", "대전광역시", "12345678", "112", "서울특별시 서초구 남부순환로 2406",
+                "https://www.sac.or.kr/", "https://www.instagram.com/seoul_arts_center", "https://www.youtube.com/channel/UCUn8h6aG6rCM1zvXKIuNpVQ"),
+            Place(R.drawable.sample_image, "예술의 전당", "서울특별시 서초구", "12345678", "112", "서울특별시 서초구 남부순환로 2406",
+                "https://www.sac.or.kr/", "https://www.instagram.com/seoul_arts_center", "https://www.youtube.com/channel/UCUn8h6aG6rCM1zvXKIuNpVQ"),
+            Place(R.drawable.sample_image, "예술의 전당", "서울특별시 서초구", "12345678", "112", "서울특별시 서초구 남부순환로 2406",
+                "https://www.sac.or.kr/", "https://www.instagram.com/seoul_arts_center", "https://www.youtube.com/channel/UCUn8h6aG6rCM1zvXKIuNpVQ"),
+            Place(R.drawable.sample_image, "예술의 전당", "서울특별시 서초구", "12345678", "112", "서울특별시 서초구 남부순환로 2406",
+                "https://www.sac.or.kr/", "https://www.instagram.com/seoul_arts_center", "https://www.youtube.com/channel/UCUn8h6aG6rCM1zvXKIuNpVQ"),
+            Place(R.drawable.sample_image, "예술의 전당", "서울특별시 서초구", "12345678", "112", "서울특별시 서초구 남부순환로 2406",
+                "https://www.sac.or.kr/", "https://www.instagram.com/seoul_arts_center", "https://www.youtube.com/channel/UCUn8h6aG6rCM1zvXKIuNpVQ"),
+            Place(R.drawable.sample_image, "예술의 전당", "서울특별시 서초구", "12345678", "112", "서울특별시 서초구 남부순환로 2406",
+                "https://www.sac.or.kr/", "https://www.instagram.com/seoul_arts_center", "https://www.youtube.com/channel/UCUn8h6aG6rCM1zvXKIuNpVQ"),
+            Place(R.drawable.sample_image, "예술의 전당", "서울특별시 서초구", "12345678", "112", "서울특별시 서초구 남부순환로 2406",
+                "https://www.sac.or.kr/", "https://www.instagram.com/seoul_arts_center", "https://www.youtube.com/channel/UCUn8h6aG6rCM1zvXKIuNpVQ")
         )
 
 
@@ -61,13 +71,29 @@ class PlaceFragment : Fragment() {
                 putExtra("PLACE_PHONE", selectedPlace.phone)
                 putExtra("PLACE_EXNUM", selectedPlace.exNum)
                 putExtra("PLACE_IMAGE", selectedPlace.imageResId)
+                putExtra("PLACE_URL", selectedPlace.url)
+                putExtra("PLACE_INSTAGRAM", selectedPlace.instagram)
+                putExtra("PLACE_YOUTUBE", selectedPlace.youtube)
             }
             startActivity(intent)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // 입력 전의 상태
+            }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // 입력 중의 상태
+                adapter.filter(s.toString()) // 검색 기능 호출
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // 입력 후의 상태
+            }
+        })
         return root
     }
 

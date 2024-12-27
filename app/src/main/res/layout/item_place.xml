@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:padding="8dp"
     android:background="#D3E7E5"
-    android:layout_marginBottom="8dp">
+    android:layout_marginBottom="12dp">
 
     <!-- 장소 이미지 -->
     <ImageView
@@ -16,19 +16,23 @@
         android:src="@drawable/sample_image" />
 
     <!-- 텍스트 정보 -->
+
+    <!-- 진행 중 -->
+
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="82dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:paddingLeft="8dp" >
+        android:paddingLeft="8dp">
 
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
             android:text="예술의 전당"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
@@ -49,12 +53,11 @@
 
     </LinearLayout>
 
-    <!-- 진행 중 -->
     <TextView
         android:id="@+id/exNumTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="0dp"
         android:gravity="center"
         android:text="진행중 112"
         android:textColor="@android:color/holo_red_dark"

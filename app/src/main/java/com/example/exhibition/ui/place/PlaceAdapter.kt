@@ -13,6 +13,8 @@ import com.example.exhibition.model.Place
 class PlaceAdapter(private val placeList: List<Place>, private val onItemClick: (Place) -> Unit) :
     RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder>() {
 
+    private var filteredList: MutableList<Place> = placeList.toMutableList()
+
     class PlaceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
         val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
@@ -42,4 +44,13 @@ class PlaceAdapter(private val placeList: List<Place>, private val onItemClick: 
     }
 
     override fun getItemCount(): Int = placeList.size
+
+    fun filter(query: String) {
+        filteredList = if (query.isEmpty()) {
+            placeList.toMutableList()
+        } else {
+            placeList.filter { it.title.contains(query, ignoreCase = true) }.toMutableList()
+        }
+        notifyDataSetChanged()
+    }
 }
