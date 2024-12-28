@@ -24,6 +24,11 @@ class PlaceDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_place_detail)
 
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = "상세 정보"
+        }
+
         val title = intent.getStringExtra("PLACE_TITLE")
         val addressAll = intent.getStringExtra("PLACE_ADDRESS")
         val exNum = intent.getStringExtra("PLACE_EXNUM")
@@ -40,6 +45,11 @@ class PlaceDetailActivity : AppCompatActivity() {
         //findViewById<TextView>(R.id.detailPhoneTextView).text = phone
         //findViewById<TextView>(R.id.detailExNumTextView).text = exNum
         findViewById<ImageView>(R.id.detailImageView).setImageResource(imageResId)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish() // 현재 Activity 종료
+        return true
     }
 
     fun onPhoneClick(view: View) {
