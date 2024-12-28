@@ -32,12 +32,12 @@ class EventFragment : Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
 
         val events = listOf(
-            EventItem(R.drawable.cat1, "도예은 피아노 리사이틀", "조이마루아트홀", "2024.12.26 - 2024.12.26"),
-            EventItem(R.drawable.cat2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
-            EventItem(R.drawable.cat3, "클래식 음악회", "예술의전당", "2024.12.01 - 2024.12.02"),
-            EventItem(R.drawable.cat1, "도예은 피아노 리사이틀", "조이마루아트홀", "2024.12.26 - 2024.12.26"),
-            EventItem(R.drawable.cat2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
-            EventItem(R.drawable.cat3, "클래식 음악회", "예술의전당", "2024.12.01 - 2024.12.02")
+            EventItem(R.drawable.photo1, "우연히 웨스 앤더슨 2", "그라운드시소 센트럴", "2024.10.18 - 2025.04.13"),
+            EventItem(R.drawable.photo2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
+            EventItem(R.drawable.photo3, "피아노 파 드 되", "유니버설아트센터", "2025.02.09"),
+            EventItem(R.drawable.photo1, "우연히 웨스 앤더슨 2", "그라운드시소 센트럴", "2024.10.18 - 2025.04.13"),
+            EventItem(R.drawable.photo2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
+            EventItem(R.drawable.photo3, "피아노 파 드 되", "유니버설아트센터", "2025.02.09")
         )
 
         val adapter = EventAdapter(events) { selectedEvent ->

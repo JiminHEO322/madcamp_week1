@@ -21,7 +21,7 @@ class EventDetailActivity : AppCompatActivity() {
             title = "상세 정보"
         }
 
-        val imageResId = intent.getIntExtra("EVENT_IMAGE", R.drawable.cat1)
+        val imageResId = intent.getIntExtra("EVENT_IMAGE", R.drawable.photo1)
         val title = intent.getStringExtra("EVENT_TITLE")
         val location = intent.getStringExtra("EVENT_LOCATION")
         val date = intent.getStringExtra("EVENT_DATE")
