@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background="#363636"
     tools:context=".ui.event.EventDetailActivity">
 
     <ImageView
@@ -33,7 +34,8 @@
                 android:padding="8dp"
                 android:text="Title"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="#ffffff"/>
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -44,14 +46,16 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="공연 장소"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textColor="#ffffff"/>
                     <TextView
                         android:id="@+id/detailEventLocation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="Location"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textColor="#ffffff"/>
                 </TableRow>
 
                 <TableRow>
@@ -60,14 +64,16 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="공연 기간"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textColor="#ffffff" />
                     <TextView
                         android:id="@+id/detailEventDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="Date"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textColor="#ffffff"/>
                 </TableRow>
 
             </TableLayout>

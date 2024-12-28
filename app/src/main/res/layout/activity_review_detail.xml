@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#363636"
+    tools:context=".ui.mypage.ReviewDetailActivity">
+
+    <ImageView
+        android:id="@+id/detailReviewImage"
+        android:layout_width="159dp"
+        android:layout_height="211dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:contentDescription="@string/image" />
+
+    <TextView
+        android:id="@+id/detailReviewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#ffffff"/>
+
+    <TextView
+        android:id="@+id/detailReviewDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Date"
+        android:textSize="18sp"
+        android:textColor="#ffffff"/>
+
+    <TextView
+        android:id="@+id/detailReviewContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Review"
+        android:textSize="18sp"
+        android:textColor="#ffffff"/>
+
+</LinearLayout>
