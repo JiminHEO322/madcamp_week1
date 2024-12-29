@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">exhibition</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="app_name">Exhibition</string>
+    <string name="title_place">Venues</string>
+    <string name="title_event">Events</string>
+    <string name="title_mypage">My Page</string>
     <string name="image">Image</string>
     <string name="title_activity_place_detail">PlaceDetail</string>
     <string name="large_text">

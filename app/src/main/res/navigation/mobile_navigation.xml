@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.exhibition.ui.place.PlaceFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_place"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.example.exhibition.ui.event.EventFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_event"
         tools:layout="@layout/fragment_event" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.exhibition.ui.mypage.MyPageFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_mypage"
         tools:layout="@layout/fragment_mypage" />
 </navigation>
