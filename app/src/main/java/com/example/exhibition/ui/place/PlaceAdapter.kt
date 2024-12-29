@@ -8,15 +8,20 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exhibition.R
-import com.example.exhibition.model.Place
+import org.json.JSONArray
+import org.json.JSONObject
+import android.content.Context
+import com.example.exhibition.toMutableList
 
 
-class PlaceAdapter(private var placeList: List<Place>,
-                   private val onItemClick: (Place) -> Unit,
-                   private val onLikeClick: (Place) -> Unit) :
+class PlaceAdapter(private val context: Context,
+                   private var placeList: JSONArray,
+                   private var events: JSONArray,
+                   private val onItemClick: (JSONObject, MutableList<JSONObject>) -> Unit,
+                   private val onLikeClick: (JSONObject) -> Unit) :
     RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder>() {
 
-    private var filteredList: MutableList<Place> = placeList.toMutableList()
+    private var filteredList: MutableList<JSONObject> = placeList.toMutableList()
 
     class PlaceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
@@ -35,15 +40,20 @@ class PlaceAdapter(private var placeList: List<Place>,
 
     override fun onBindViewHolder(holder: PlaceViewHolder, position: Int) {
         val place = filteredList[position]
-        holder.imageView.setImageResource(place.imageResId)
-        holder.titleTextView.text = place.title
-        holder.addressTextView.text = place.address
-        holder.phoneTextView.text = place.phone
-        holder.exNumTextView.text = place.exNum
-        holder.likeImageView.setImageResource(if (place.isLike) R.drawable.icon_fulllike else R.drawable.icon_like)
+        val placeId = place.getInt("venue_id")
+        val imageName = place.getString("image")
+        val imageResId = context.resources.getIdentifier(imageName, "drawable", context.packageName)
+        val exList: MutableList<JSONObject> = getEx(placeId)
+
+        holder.imageView.setImageResource(imageResId)
+        holder.titleTextView.text = place.getString("name")
+        holder.addressTextView.text = place.getString("address")
+        holder.phoneTextView.text = place.getString("phone")
+        holder.exNumTextView.text = exList.size.toString()
+        holder.likeImageView.setImageResource(if (place.getBoolean("isLike")) R.drawable.icon_fulllike else R.drawable.icon_like)
 
         holder.itemView.setOnClickListener {
-            onItemClick(place)
+            onItemClick(place, exList)
         }
         holder.likeImageView.setOnClickListener {
             onLikeClick(place)
@@ -52,24 +62,33 @@ class PlaceAdapter(private var placeList: List<Place>,
 
     override fun getItemCount(): Int = filteredList.size
 
-
-
     fun filter(query: String) {
         val sanitizedQuery = query.replace(" ", "")
         filteredList = if (sanitizedQuery.isEmpty()) {
             placeList.toMutableList()
         } else {
-            placeList.filter {
-                val sanitizedTitle = it.title.replace(" ", "")
+            placeList.toMutableList().filter {
+                val sanitizedTitle = it.getString("name").replace(" ", "")
                 sanitizedTitle.contains(sanitizedQuery, ignoreCase = true) }.toMutableList()
         }
         notifyDataSetChanged()
     }
 
-    fun updateData(newPlaceList: List<Place>) {
-        placeList = newPlaceList
-        filteredList = placeList.toMutableList()
+    fun updateData(newPlaceList: MutableList<JSONObject>) {
+        placeList = JSONArray(newPlaceList)
+        filteredList = newPlaceList
         notifyDataSetChanged()
     }
 
+
+    private fun getEx(place_id: Int): MutableList<JSONObject> {
+        val list = mutableListOf<JSONObject>()
+        for (i in 0 until events.length()) {
+            val event = events.getJSONObject(i)
+            if (event.getInt("venue_id") ==  place_id) {
+                list.add(event)
+            }
+        }
+        return list
+    }
 }
