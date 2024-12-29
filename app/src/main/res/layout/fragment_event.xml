@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,12 +8,26 @@
     tools:context=".ui.event.EventFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewTop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
         android:paddingBottom="40dp"
         tools:layout_editor_absoluteX="48dp"
         tools:layout_editor_absoluteY="-350dp"
-        tools:listitem="@layout/item_event" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_event"
+        android:layout_weight="1"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewBottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:paddingBottom="40dp"
+        tools:layout_editor_absoluteX="48dp"
+        tools:layout_editor_absoluteY="-350dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_event"
+        android:layout_weight="1"/>
+</LinearLayout>

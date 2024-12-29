@@ -9,5 +9,6 @@ data class Place (
     val addressAll: String, // 전체 주소
     val url: String,
     val instagram: String,
-    val youtube: String
+    val youtube: String,
+    var isLike : Boolean = false
 )

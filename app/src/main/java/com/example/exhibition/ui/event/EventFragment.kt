@@ -5,14 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.exhibition.databinding.FragmentEventBinding
-import com.example.exhibition.R
 import android.content.Intent
 import org.json.JSONObject
 import android.content.Context
@@ -41,7 +37,26 @@ class EventFragment : Fragment() {
             val venues = jsonObject.getJSONArray("venues")
             val events = jsonObject.getJSONArray("events")
 
-            val adapter = EventAdapter(requireContext(), venues, events) { selectedEvent ->
+            val topEvents = mutableListOf<JSONObject>()
+            val bottomEvents = mutableListOf<JSONObject>()
+            for (i in 0 until events.length()) {
+                val event = events.getJSONObject(i)
+                when (event.getString("category")) {
+                    "전시" -> topEvents.add(event)
+                    "공연" -> bottomEvents.add(event)
+                }
+            }
+
+            val topAdapter = EventAdapter(requireContext(), venues, topEvents) { selectedEvent ->
+                val selectedVenue = getVenueLocation(venues, selectedEvent.getInt("venue_id"))
+                val intent = Intent(requireContext(), EventDetailActivity::class.java).apply {
+                    putExtra("event_data", selectedEvent.toString())
+                    putExtra("event_location", selectedVenue)
+                }
+                startActivity(intent)
+            }
+
+            val bottomAdapter = EventAdapter(requireContext(), venues, bottomEvents) { selectedEvent ->
                 val selectedVenue = getVenueLocation(venues, selectedEvent.getInt("venue_id"))
                 val intent = Intent(requireContext(), EventDetailActivity::class.java).apply {
                     putExtra("event_data", selectedEvent.toString())
@@ -51,8 +66,13 @@ class EventFragment : Fragment() {
             }
 
             // RecyclerView 설정
-            binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-            binding.recyclerView.adapter = adapter
+            binding.recyclerViewTop.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding.recyclerViewTop.adapter = topAdapter
+
+            binding.recyclerViewBottom.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding.recyclerViewBottom.adapter = bottomAdapter
         } else {
             Toast.makeText(requireContext(), "JSON 데이터를 로드할 수 없습니다.", Toast.LENGTH_SHORT).show()
         }

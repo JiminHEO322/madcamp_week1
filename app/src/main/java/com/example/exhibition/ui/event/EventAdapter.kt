@@ -1,14 +1,11 @@
 package com.example.exhibition.ui.event
 
 import android.content.Context
-import android.media.metrics.Event
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exhibition.R
 import org.json.JSONArray
@@ -18,7 +15,7 @@ import org.json.JSONObject
 class EventAdapter(
     private val context: Context,
     private val venues: JSONArray,
-    private val events: JSONArray,
+    private val events: MutableList<JSONObject>,
     private val onItemClick: (JSONObject) -> Unit
     ) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
@@ -36,7 +33,7 @@ class EventAdapter(
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val event: JSONObject = events.getJSONObject(position)
+        val event: JSONObject = events[position]
         val imageName = event.getString("image")
         val imageResId = context.resources.getIdentifier(imageName, "drawable", context.packageName)
 
@@ -50,7 +47,7 @@ class EventAdapter(
         }
     }
 
-    override fun getItemCount(): Int = events.length()
+    override fun getItemCount(): Int = events.size
 
     private fun getVenueLocation(venues: JSONArray, venueID: Int): String? {
         for (i in 0 until venues.length()){
