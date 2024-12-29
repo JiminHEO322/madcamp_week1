@@ -1,18 +1,20 @@
 package com.example.exhibition.ui.mypage
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exhibition.R
 import com.example.exhibition.model.Review
-import com.example.exhibition.ui.event.EventAdapter.EventViewHolder
+import org.json.JSONArray
+import org.json.JSONObject
 
-class MyPageAdapter (
-    private val reviews: List<Review>,
-    private val onItemClick: (Review) -> Unit
+class MyPageAdapter(
+    private val context: Context,
+    private val reviews: MutableList<JSONObject>,
+    private val onItemClick: (JSONObject) -> Unit
     ) : RecyclerView.Adapter<MyPageAdapter.ReviewViewHolder>() {
 
     class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,8 +28,11 @@ class MyPageAdapter (
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        val event = reviews[position]
-        holder.imageView.setImageResource(event.imageResId)
+        val event: JSONObject = reviews[position]
+        val imageName = event.getString("image")
+        val imageResId = context.resources.getIdentifier(imageName, "drawable", context.packageName)
+
+        holder.imageView.setImageResource(imageResId)
 
         holder.itemView.setOnClickListener{
             onItemClick(event)

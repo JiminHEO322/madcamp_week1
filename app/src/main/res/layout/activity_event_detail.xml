@@ -111,7 +111,7 @@
                 app:layout_constraintWidth_percent="0.5"
                 app:layout_constraintStart_toEndOf="@id/likeButton"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/icon_save" />
+                app:srcCompat="@drawable/save_unviewed" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </LinearLayout>

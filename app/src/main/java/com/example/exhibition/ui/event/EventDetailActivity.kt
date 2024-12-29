@@ -13,6 +13,9 @@ import android.content.Context
 
 class EventDetailActivity : AppCompatActivity() {
 
+    private lateinit var saveImageView: ImageView
+    private var isViewed: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_detail)
@@ -36,11 +39,31 @@ class EventDetailActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.detailEventTitle).text = title
             findViewById<TextView>(R.id.detailEventLocation).text = location
             findViewById<TextView>(R.id.detailEventDate).text = date
+
+            saveImageView = findViewById(R.id.saveButton)
+            saveImageView.setOnClickListener{
+                toggleImage()
+            }
         }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         finish() // 현재 Activity 종료
         return true
+    }
+
+    private fun toggleImage() {
+        if (isViewed) {
+            saveImageView.setImageResource(R.drawable.save_viewed)
+        } else {
+            saveImageView.setImageResource(R.drawable.save_unviewed)
+        }
+        isViewed = !isViewed
+
+        updateJsonFile(isViewed)
+    }
+
+    private fun updateJsonFile(isViewed: Boolean){
+
     }
 }

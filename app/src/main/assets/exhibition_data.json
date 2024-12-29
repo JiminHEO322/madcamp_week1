@@ -44,7 +44,7 @@
       "venue_id": 1,
       "date": "2024.10.18 - 2025.04.13",
       "image": "photo1",
-      "view": false,
+      "viewed": false,
       "category": "전시"
     },
     {
@@ -53,7 +53,7 @@
       "venue_id": 1,
       "date": "2024.11.29 - 2025.05.1",
       "image": "photo2",
-      "view": false,
+      "viewed": false,
       "category": "공연"
     },
     {
@@ -62,7 +62,7 @@
       "venue_id": 2,
       "date": "2025.02.09",
       "image": "photo3",
-      "view": false,
+      "viewed": false,
       "category": "공연"
     },
     {
@@ -71,7 +71,7 @@
       "venue_id": 1,
       "date": "2025.02.19",
       "image": "photo3",
-      "view": false,
+      "viewed": false,
       "category": "전시"
     }
   ],

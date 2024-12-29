@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.exhibition.R
 import com.example.exhibition.model.Review
+import android.content.Context
+import org.json.JSONObject
 
 
 class ReviewDetailActivity : AppCompatActivity() {
@@ -27,8 +29,12 @@ class ReviewDetailActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val imageResId = intent.getIntExtra("REVIEW_IMAGE", R.drawable.photo1)
-        val title = intent.getStringExtra("REVIEW_TITLE")
+        val reviewJsonString = intent.getStringExtra("review_data")
+        
+        // 수정 필요
+        val review = JSONObject(reviewJsonString)
+        val imageName = review.getString("image")
+        val imageResId = resources.getIdentifier(imageName, "drawable", packageName)
 
         findViewById<ImageView>(R.id.detailReviewImage).setImageResource(imageResId)
         findViewById<TextView>(R.id.detailReviewTitle).text = title
