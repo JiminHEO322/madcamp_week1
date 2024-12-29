@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exhibition.databinding.FragmentEventBinding
 import com.example.exhibition.R
@@ -29,9 +29,9 @@ class EventFragment : Fragment() {
     ): View? {
         _binding = FragmentEventBinding.inflate(inflater, container, false)
         val view = inflater.inflate(R.layout.fragment_event, container, false)
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
+        //val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
 
-        val events = listOf(
+        val topEvents = listOf(
             EventItem(R.drawable.photo1, "우연히 웨스 앤더슨 2", "그라운드시소 센트럴", "2024.10.18 - 2025.04.13"),
             EventItem(R.drawable.photo2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
             EventItem(R.drawable.photo3, "피아노 파 드 되", "유니버설아트센터", "2025.02.09"),
@@ -40,7 +40,25 @@ class EventFragment : Fragment() {
             EventItem(R.drawable.photo3, "피아노 파 드 되", "유니버설아트센터", "2025.02.09")
         )
 
-        val adapter = EventAdapter(events) { selectedEvent ->
+        val bottomEvents = listOf(
+            EventItem(R.drawable.photo1, "우연히 웨스 앤더슨 2", "그라운드시소 센트럴", "2024.10.18 - 2025.04.13"),
+            EventItem(R.drawable.photo2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
+            EventItem(R.drawable.photo3, "피아노 파 드 되", "유니버설아트센터", "2025.02.09"),
+            EventItem(R.drawable.photo1, "우연히 웨스 앤더슨 2", "그라운드시소 센트럴", "2024.10.18 - 2025.04.13"),
+            EventItem(R.drawable.photo2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
+            EventItem(R.drawable.photo3, "피아노 파 드 되", "유니버설아트센터", "2025.02.09")
+        )
+
+        val topAdapter = EventAdapter(topEvents) { selectedEvent ->
+            val intent = Intent(requireContext(), EventDetailActivity::class.java).apply {
+                putExtra("EVENT_IMAGE", selectedEvent.imageResId)
+                putExtra("EVENT_TITLE", selectedEvent.title)
+                putExtra("EVENT_LOCATION", selectedEvent.location)
+                putExtra("EVENT_DATE", selectedEvent.date)
+            }
+            startActivity(intent)
+        }
+        val bottomAdapter = EventAdapter(bottomEvents) { selectedEvent ->
             val intent = Intent(requireContext(), EventDetailActivity::class.java).apply {
                 putExtra("EVENT_IMAGE", selectedEvent.imageResId)
                 putExtra("EVENT_TITLE", selectedEvent.title)
@@ -50,11 +68,16 @@ class EventFragment : Fragment() {
             startActivity(intent)
         }
 
-        // RecyclerView 설정
-        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
-        binding.recyclerView.adapter = adapter
+            // RecyclerView 설정
+            binding.recyclerViewTop.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding.recyclerViewTop.adapter = topAdapter
 
-        return binding.root
+            binding.recyclerViewBottom.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding.recyclerViewBottom.adapter = bottomAdapter
+
+            return binding.root
     }
 
 

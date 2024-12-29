@@ -1,51 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/item_background"
-    android:padding="8dp"
+    android:padding="0dp"
     android:layout_margin="8dp"
     android:gravity="center_horizontal">
 
-    <ImageView
-        android:id="@+id/eventImage"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="211dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/image" />
+        android:layout_height="250dp">
+        <ImageView
+            android:id="@+id/eventImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/frame" />
+    </FrameLayout>
 
-    <TextView
-        android:id="@+id/eventTitle"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="start"
-        android:text="Item Name"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="14dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8" />
 
-    <TextView
-        android:id="@+id/eventLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="start"
-        android:text="Location"
-        android:textSize="12sp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"/>
+        <androidx.cardview.widget.CardView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            android:layout_weight="2">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:background="@drawable/silver_background" >
+                <TextView
+                    android:id="@+id/eventTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Item Name"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"/>
 
-    <TextView
-        android:id="@+id/eventDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="start"
-        android:text="24.02.10-24.15.01"
-        android:textSize="12sp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"/>
+                <TextView
+                    android:id="@+id/eventLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="Location"
+                    android:textSize="10sp"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:id="@+id/eventDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="24.02.10-24.15.01"
+                    android:textSize="10sp"
+                    android:textColor="@android:color/black"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8" />
+    </LinearLayout>
+
+
 </LinearLayout>

@@ -12,9 +12,18 @@ import android.view.View
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.exhibition.ui.event.EventAdapter
+import com.example.exhibition.ui.event.EventItem
+import com.example.exhibition.ui.event.EventDetailActivity
 
 
 class PlaceDetailActivity : AppCompatActivity() {
+
+    private lateinit var eventRecyclerView: RecyclerView
+    private lateinit var eventAdapter: EventAdapter
 
     private var phone: String? = null
     private var url: String? = null
@@ -44,6 +53,36 @@ class PlaceDetailActivity : AppCompatActivity() {
         //findViewById<TextView>(R.id.detailExNumTextView).text = exNum
         findViewById<ImageView>(R.id.detailImageView).setImageResource(imageResId)
         findViewById<ImageView>(R.id.detailLikeImageView).setImageResource(if (isLike) R.drawable.icon_fulllike else R.drawable.icon_like)
+
+
+
+        // Event RecyclerView 초기화
+        eventRecyclerView = findViewById(R.id.eventRecyclerView)
+
+        // 샘플 데이터 생성
+        val eventList = listOf(
+            EventItem(R.drawable.photo1, "우연히 웨스 앤더슨 2", "그라운드시소 센트럴", "2024.10.18 - 2025.04.13"),
+            EventItem(R.drawable.photo2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
+            EventItem(R.drawable.photo3, "피아노 파 드 되", "유니버설아트센터", "2025.02.09"),
+            EventItem(R.drawable.photo1, "우연히 웨스 앤더슨 2", "그라운드시소 센트럴", "2024.10.18 - 2025.04.13"),
+            EventItem(R.drawable.photo2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
+            EventItem(R.drawable.photo3, "피아노 파 드 되", "유니버설아트센터", "2025.02.09")
+        )
+
+        // RecyclerView와 Adapter 설정
+        eventAdapter = EventAdapter(eventList) { selectedEvent ->
+            // 클릭 이벤트 처리
+            val intent = Intent(this, EventDetailActivity::class.java).apply {
+                putExtra("EVENT_IMAGE", selectedEvent.imageResId)
+                putExtra("EVENT_TITLE", selectedEvent.title)
+                putExtra("EVENT_LOCATION", selectedEvent.location)
+                putExtra("EVENT_DATE", selectedEvent.date)
+            }
+            startActivity(intent)
+        }
+
+        eventRecyclerView.layoutManager = GridLayoutManager(this,2)
+        eventRecyclerView.adapter = eventAdapter
     }
 
     fun onPhoneClick(view: View) {
