@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.view.View
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 
 
 class PlaceDetailActivity : AppCompatActivity() {
@@ -19,25 +20,22 @@ class PlaceDetailActivity : AppCompatActivity() {
     private var url: String? = null
     private var instagram: String? = null
     private var youtube: String? = null
+    private var isLike: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_place_detail)
 
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            title = "상세 정보"
-        }
-
         val title = intent.getStringExtra("PLACE_TITLE")
         val addressAll = intent.getStringExtra("PLACE_ADDRESS")
         val exNum = intent.getStringExtra("PLACE_EXNUM")
-        val imageResId = intent.getIntExtra("PLACE_IMAGE", R.drawable.sample_image)
+        val imageResId = intent.getIntExtra("PLACE_IMAGE", R.drawable.yesul)
 
         phone = intent.getStringExtra("PLACE_PHONE")
         url = intent.getStringExtra("PLACE_URL")
         instagram = intent.getStringExtra("PLACE_INSTAGRAM")
         youtube = intent.getStringExtra("PLACE_YOUTUBE")
+        isLike = intent.getBooleanExtra("PLACE_ISLIKE", false)
 
 
         findViewById<TextView>(R.id.detailTitleTextView).text = title
@@ -45,11 +43,7 @@ class PlaceDetailActivity : AppCompatActivity() {
         //findViewById<TextView>(R.id.detailPhoneTextView).text = phone
         //findViewById<TextView>(R.id.detailExNumTextView).text = exNum
         findViewById<ImageView>(R.id.detailImageView).setImageResource(imageResId)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        finish() // 현재 Activity 종료
-        return true
+        findViewById<ImageView>(R.id.detailLikeImageView).setImageResource(if (isLike) R.drawable.icon_fulllike else R.drawable.icon_like)
     }
 
     fun onPhoneClick(view: View) {
@@ -68,6 +62,10 @@ class PlaceDetailActivity : AppCompatActivity() {
 
     fun onInstgramClick(view: View) {
         val intent = Intent(Intent.ACTION_VIEW).apply {
+            if (instagram == "null") {
+                Toast.makeText(this@PlaceDetailActivity, "인스타 계정이 없습니다", Toast.LENGTH_SHORT).show()
+                return
+            }
             data = Uri.parse(instagram)
         }
         startActivity(intent)
@@ -75,6 +73,10 @@ class PlaceDetailActivity : AppCompatActivity() {
 
     fun onYoutubeClick(view: View) {
         val intent = Intent(Intent.ACTION_VIEW).apply {
+            if (youtube == "null") {
+                Toast.makeText(this@PlaceDetailActivity, "유튜브 계정이 없습니다", Toast.LENGTH_SHORT).show()
+                return
+            }
             data = Uri.parse(youtube)
         }
         startActivity(intent)
