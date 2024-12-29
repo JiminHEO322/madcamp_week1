@@ -32,17 +32,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:text="Date"
         android:textSize="18sp"
         android:textColor="#ffffff"/>
+
+    <EditText
+        android:id="@+id/editDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:hint="관람한 날짜 입력하기"
+        android:textColorHint="@color/lightgray"
+        android:textSize="18sp"
+        android:textColor="#ffffff"
+        android:visibility="gone"/>
+
 
     <TextView
         android:id="@+id/detailReviewContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:text="Review"
         android:textSize="18sp"
         android:textColor="#ffffff"/>
+
+    <EditText
+        android:id="@+id/editContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:hint="리뷰 입력하기"
+        android:textColorHint="@color/lightgray"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:visibility="gone"/>
 
 </LinearLayout>

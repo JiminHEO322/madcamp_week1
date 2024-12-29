@@ -6,11 +6,12 @@ import android.widget.TextView
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.exhibition.R
+import org.json.JSONArray
+import org.json.JSONObject
+import android.content.Context
 
 
 class EventDetailActivity : AppCompatActivity() {
-
-//    private var phone: String? = null // 멤버 변수로 선언
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,15 +22,21 @@ class EventDetailActivity : AppCompatActivity() {
             title = "상세 정보"
         }
 
-        val imageResId = intent.getIntExtra("EVENT_IMAGE", R.drawable.photo1)
-        val title = intent.getStringExtra("EVENT_TITLE")
-        val location = intent.getStringExtra("EVENT_LOCATION")
-        val date = intent.getStringExtra("EVENT_DATE")
+        val jsonString = intent.getStringExtra("event_data")
+        val location = intent.getStringExtra("event_location")
 
-        findViewById<ImageView>(R.id.detailEventImage).setImageResource(imageResId)
-        findViewById<TextView>(R.id.detailEventTitle).text = title
-        findViewById<TextView>(R.id.detailEventLocation).text = location
-        findViewById<TextView>(R.id.detailEventDate).text = date
+        if (jsonString != null) {
+            val jsonObject = JSONObject(jsonString)
+            val title = jsonObject.getString("title")
+            val date = jsonObject.getString("date")
+            val imageName = jsonObject.getString("image")
+            val imageResId = resources.getIdentifier(imageName, "drawable", packageName)
+
+            findViewById<ImageView>(R.id.detailEventImage).setImageResource(imageResId)
+            findViewById<TextView>(R.id.detailEventTitle).text = title
+            findViewById<TextView>(R.id.detailEventLocation).text = location
+            findViewById<TextView>(R.id.detailEventDate).text = date
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

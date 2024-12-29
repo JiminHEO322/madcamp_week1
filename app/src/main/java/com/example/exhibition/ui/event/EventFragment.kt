@@ -14,6 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.exhibition.databinding.FragmentEventBinding
 import com.example.exhibition.R
 import android.content.Intent
+import org.json.JSONObject
+import android.content.Context
+import org.json.JSONArray
+import java.io.InputStream
 
 
 class EventFragment : Fragment() {
@@ -28,32 +32,30 @@ class EventFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentEventBinding.inflate(inflater, container, false)
-        val view = inflater.inflate(R.layout.fragment_event, container, false)
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
+//        val view = inflater.inflate(R.layout.fragment_event, container, false)
+//        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
 
-        val events = listOf(
-            EventItem(R.drawable.photo1, "우연히 웨스 앤더슨 2", "그라운드시소 센트럴", "2024.10.18 - 2025.04.13"),
-            EventItem(R.drawable.photo2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
-            EventItem(R.drawable.photo3, "피아노 파 드 되", "유니버설아트센터", "2025.02.09"),
-            EventItem(R.drawable.photo1, "우연히 웨스 앤더슨 2", "그라운드시소 센트럴", "2024.10.18 - 2025.04.13"),
-            EventItem(R.drawable.photo2, "뮤지컬 지킬앤하이드", "블루스퀘어 신한카드홀", "2024.11.29 - 2025.05.18"),
-            EventItem(R.drawable.photo3, "피아노 파 드 되", "유니버설아트센터", "2025.02.09")
-        )
+        val jsonString = loadJSONFromAsset(requireContext(), "exhibition_data.json")
+        if (jsonString != null) {
+            val jsonObject = JSONObject(jsonString)
+            val venues = jsonObject.getJSONArray("venues")
+            val events = jsonObject.getJSONArray("events")
 
-        val adapter = EventAdapter(events) { selectedEvent ->
-            val intent = Intent(requireContext(), EventDetailActivity::class.java).apply {
-                putExtra("EVENT_IMAGE", selectedEvent.imageResId)
-                putExtra("EVENT_TITLE", selectedEvent.title)
-                putExtra("EVENT_LOCATION", selectedEvent.location)
-                putExtra("EVENT_DATE", selectedEvent.date)
+            val adapter = EventAdapter(requireContext(), venues, events) { selectedEvent ->
+                val selectedVenue = getVenueLocation(venues, selectedEvent.getInt("venue_id"))
+                val intent = Intent(requireContext(), EventDetailActivity::class.java).apply {
+                    putExtra("event_data", selectedEvent.toString())
+                    putExtra("event_location", selectedVenue)
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
+
+            // RecyclerView 설정
+            binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.recyclerView.adapter = adapter
+        } else {
+            Toast.makeText(requireContext(), "JSON 데이터를 로드할 수 없습니다.", Toast.LENGTH_SHORT).show()
         }
-
-        // RecyclerView 설정
-        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
-        binding.recyclerView.adapter = adapter
-
         return binding.root
     }
 
@@ -61,5 +63,29 @@ class EventFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun loadJSONFromAsset(context: Context, fileName: String): String? {
+        return try {
+            val inputStream: InputStream = context.assets.open(fileName)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            String(buffer, Charsets.UTF_8)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun getVenueLocation(venues: JSONArray, venueID: Int): String? {
+        for (i in 0 until venues.length()){
+            val venue = venues.getJSONObject(i)
+            if (venue.getInt("venue_id") == venueID) {
+                return venue.getString("name")
+            }
+        }
+        return "-"
     }
 }
