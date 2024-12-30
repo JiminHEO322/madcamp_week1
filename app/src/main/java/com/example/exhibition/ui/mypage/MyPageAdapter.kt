@@ -1,6 +1,7 @@
 package com.example.exhibition.ui.mypage
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,4 +41,11 @@ class MyPageAdapter(
     }
 
     override fun getItemCount(): Int = reviews.size
+
+    fun updateData(newReviews: MutableList<JSONObject>) {
+        reviews.clear()
+        reviews.addAll(newReviews)
+        Log.d("mypageadapter", "지워줘ㅓㅓㅓㅓㅓㅓㅓㅓㅓ")
+        notifyDataSetChanged()
+    }
 }

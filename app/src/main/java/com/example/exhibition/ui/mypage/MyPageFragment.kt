@@ -1,5 +1,6 @@
 package com.example.exhibition.ui.mypage
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,8 +12,12 @@ import com.example.exhibition.databinding.FragmentMypageBinding
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.recyclerview.widget.RecyclerView
+import com.example.exhibition.R
 import org.json.JSONObject
 import com.example.exhibition.toMutableList
+import com.example.exhibition.ui.place.PlaceAdapter
 import org.json.JSONArray
 import java.io.File
 import java.io.InputStream
@@ -25,6 +30,8 @@ class MyPageFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var adapter: MyPageAdapter
 
     private val fileName: String = "exhibition_data.json"
     private var reviews = mutableListOf<JSONObject>()
@@ -39,6 +46,7 @@ class MyPageFragment : Fragment() {
 //        val view = inflater.inflate(R.layout.fragment_mypage, container, false)
 //        val recyclerView: RecyclerView = view.findViewById(R.id.review_recyclerView)
 
+        // json 데이터 불러오기
         val jsonString = initializeDefaultJSON(requireContext())
 
         if (jsonString != null) {
@@ -46,7 +54,7 @@ class MyPageFragment : Fragment() {
             reviews = jsonObject.getJSONArray("reviews").toMutableList()
             Log.d("MyPageFragment", "reviews: $reviews")
 
-            val adapter = MyPageAdapter(requireContext(), reviews) { selectedReview ->
+            adapter = MyPageAdapter(requireContext(), reviews) { selectedReview ->
                 val intent = Intent(requireContext(), ReviewDetailActivity::class.java).apply {
                     Log.d("MyPageFragment", "selectedReview: ${selectedReview.toString()}")
                     val reviewId = selectedReview.getInt("review_id")
@@ -58,6 +66,9 @@ class MyPageFragment : Fragment() {
 
             binding.reviewRecyclerView.layoutManager = GridLayoutManager(context, 3)
             binding.reviewRecyclerView.adapter = adapter
+
+            Log.d("MyPageFragment", "notify!!!!!!!!!!!!11")
+            adapter.notifyDataSetChanged()
         } else{
             Toast.makeText(requireContext(), "리뷰가 없습니다.", Toast.LENGTH_SHORT).show()
         }
@@ -69,6 +80,24 @@ class MyPageFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("MyPageFragment", "RESUME")
+
+        // JSON 파일에서 데이터를 다시 로드
+        val updatedJsonString = loadJSON(requireContext())
+        if (updatedJsonString != null) {
+            val updatedJsonObject = JSONObject(updatedJsonString)
+            reviews.clear() // 기존 데이터를 삭제
+            reviews.addAll(updatedJsonObject.getJSONArray("reviews").toMutableList())
+
+            // 어댑터에 데이터 갱신 알림
+            adapter.notifyDataSetChanged()
+            Log.d("MyPageFragment", "onResume: 어댑터 데이터 업데이트 완료")
+        } else {
+            Log.w("MyPageFragment", "onResume: JSON 데이터를 다시 로드할 수 없습니다.")
+        }    }
 
     private fun initializeDefaultJSON(context: Context): String? {
         val file = File(context.filesDir, fileName)

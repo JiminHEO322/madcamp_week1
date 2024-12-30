@@ -1,5 +1,6 @@
 package com.example.exhibition.ui.mypage
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.exhibition.R
 import com.example.exhibition.model.Review
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -110,8 +113,51 @@ class ReviewDetailActivity : AppCompatActivity() {
                 invalidateOptionsMenu()
                 return true
             }
+
+            R.id.action_delete -> {
+                deleteReview()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteReview() {
+        Log.d("ReviewDetailActivity", "delete")
+        AlertDialog.Builder(this)
+            .setTitle("삭제 확인")
+            .setMessage("이 리뷰를 정말로 삭제하시겠습니까?")
+            .setPositiveButton("예") { _, _ ->
+                try {
+                    // 리뷰 삭제
+                    for (i in 0 until reviews.length()) {
+                        val review = reviews.getJSONObject(i)
+                        if (review.getInt("review_id") == reviewId) {
+                            reviews.remove(i) // 리뷰 삭제
+
+                            for (j in 0 until events.length()){
+                                val event = events.getJSONObject(i)
+                                if (event.getInt("event_id") == reviewId) {
+                                    event.put("viewed", false)
+                                }
+                            }
+                            saveUpdatedJSON() // JSON 파일 업데이트
+
+                            Toast.makeText(this, "리뷰가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                            finish() // 액티비티 종료
+                            return@setPositiveButton
+                        }
+                    }
+                    Toast.makeText(this, "리뷰를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Log.e("ReviewDetailActivity", "리뷰 삭제 중 오류 발생: ${e.message}")
+                    Toast.makeText(this, "삭제 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("아니오") { dialog, _ ->
+                dialog.dismiss() // 팝업 닫기
+            }
+            .show()
     }
 
 

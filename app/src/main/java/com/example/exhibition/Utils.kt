@@ -1,13 +1,7 @@
 package com.example.exhibition
 
-import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
-import java.io.InputStream
 
 
 fun getVenueLocation(venues: JSONArray, venueID: Int): String? {

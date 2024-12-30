@@ -35,14 +35,19 @@
             android:gravity="center"
             android:textSize="16sp" />
     </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/review_recyclerView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/myPageReviewContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:paddingBottom="40dp"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        tools:listitem="@layout/item_review" />
+        android:layout_weight="1">
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/review_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:paddingBottom="40dp"
+                android:orientation="vertical"
+                tools:listitem="@layout/item_review" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </LinearLayout>
