@@ -17,13 +17,13 @@ import android.net.Uri
 import android.widget.EditText
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Toast
 import java.io.InputStream
-import com.example.exhibition.loadJSONFromAsset
-import com.example.exhibition.getVenueLocation
 import com.example.exhibition.toMutableList
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
 class PlaceFragment : Fragment() {
 
@@ -43,34 +43,54 @@ class PlaceFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val placeViewModel =
-            ViewModelProvider(this).get(PlaceViewModel::class.java)
+//        val placeViewModel =
+//            ViewModelProvider(this).get(PlaceViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val fileName: String = "exhibition_data.json"
 
-        val jsonString = loadJSONFromAsset(requireContext(), "exhibition_data.json")
+        val filePath = File(requireContext().filesDir, fileName)
+        if (!filePath.exists()) {
+            Log.e("PlaceFragment", "JSON 파일 경로가 잘못되었습니다: ${filePath.absolutePath}")
+        } else{
+            Log.d("PlaceFragment", "올바른 파일 경로")
+        }
+
+        val jsonString = initializeDefaultJSON(requireContext(), fileName)
+//        val jsonString = loadJSON(requireContext(), "exhibition_data.json")
+
+        if (jsonString == null){
+            Log.e("PlaceFragment", "JSON 파일을 찾을 수 없습니다")
+        }
         if (jsonString != null) {
+            Log.d("PlaceFragment", "JSON 데이터 로드 성공: $jsonString")
+
             val jsonObject = JSONObject(jsonString)
-            venues = jsonObject.getJSONArray("venues")
+            venues = jsonObject.getJSONArray("venues") ?: JSONArray()
             venuesList = venues.toMutableList()
-            val events = jsonObject.getJSONArray("events")
+
+            val events = jsonObject.getJSONArray("events")?: JSONArray()
 
             adapter = PlaceAdapter(
                 requireContext(),
                 venues,
                 events,
                 onItemClick = { selectedPlace, exList ->
-                    val exList_jsonArray = JSONArray(exList)
+                    val exListJsonArray = JSONArray(exList)
                     val intent = Intent(requireContext(), PlaceDetailActivity::class.java).apply {
                         putExtra("place_data", selectedPlace.toString())
-                        putExtra("ex_list", exList_jsonArray.toString())
+                        putExtra("ex_list", exListJsonArray.toString())
                         putExtra("venues", venues.toString())
                     }
                     startActivity(intent)
                 },
                 onLikeClick = { likedPlace ->
-                    toggleLikeState(likedPlace)
+                    toggleLikeState(likedPlace, jsonObject)
+                    Log.d("PlaceFragment", "isLike JSON 파일 업데이트 완료: $jsonObject.toString()")
+                    val editedJsonString = initializeDefaultJSON(requireContext(), "exhibition_data.json")
+                    Log.d("PlaceFragment", "edited JSON : $editedJsonString")
+//                    saveJSONToFile(requireContext(), "exhibition_data.json", jsonObject.put("venues", JSONArray(venuesList)).toString())
                 }
             )
 
@@ -92,6 +112,8 @@ class PlaceFragment : Fragment() {
                     // 입력 후의 상태
                 }
             })
+
+
         }
         else {
             Toast.makeText(requireContext(), "장소 데이터를 로드할 수 없습니다.", Toast.LENGTH_SHORT).show()
@@ -113,16 +135,111 @@ class PlaceFragment : Fragment() {
         adapter.updateData(filteredList)
     }
 
-    private fun toggleLikeState(likedPlace: JSONObject) {
-        val index = venuesList.indexOfFirst { it.getInt("venue_id") == likedPlace.getInt("venue_id") }
-        if (index != -1) {
-            val isLike = likedPlace.getBoolean("isLike")
-            venuesList[index].put("isLike", !isLike)
-            adapter.notifyItemChanged(index)
+    private fun toggleLikeState(likedPlace: JSONObject, jsonObject: JSONObject) {
+        Log.d("PlaceFragment", "likedplace: $likedPlace")
+        for (i in 0 until venues.length()) {
+            val venue = venues.getJSONObject(i)
+            if (venue.getInt("venue_id") == likedPlace.get("venue_id")) {
+                val currentLikeState = venue.getBoolean("isLike")
+                venue.put("isLike", !currentLikeState)
+
+                saveJSONToFile(requireContext(), "exhibition_data.json", jsonObject.toString())
+                Log.d("PlaceFragment", "isLike 상태 변경 완료: ${venue.toString(2)}")
+                val savedFile = loadJSON(requireContext(), "exhibition_data.json")
+                Log.d("PlaceFragment", "savedFile : $savedFile")
+
+                adapter.notifyItemChanged(i)
+
+                saveUpdatedJSON()
+            }
         }
     }
 
     private fun filterLike(): MutableList<JSONObject> {
         return venuesList.filter { it.getBoolean("isLike") }.toMutableList()
+    }
+
+    private fun initializeDefaultJSON(context: Context, fileName: String): String? {
+        val file = File(context.filesDir, fileName)
+        if (!file.exists()) {
+            try {
+                val inputStream: InputStream = context.assets.open(fileName)
+                val size = inputStream.available()
+                val buffer = ByteArray(size)
+                inputStream.read(buffer)
+                inputStream.close()
+
+                val defaultJson = String(buffer, Charsets.UTF_8)
+                saveJSONToFile(context, fileName, defaultJson) // 파일 저장
+                Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+                return defaultJson
+            } catch (e: Exception) {
+                Log.e("PlaceFragment", "기본 JSON 파일 초기화 중 오류 발생: ${e.message}")
+            }
+        }
+        return loadJSON(context, fileName) // 파일이 있으면 로드
+//        val inputStream: InputStream = context.assets.open(fileName)
+//        val size = inputStream.available()
+//        val buffer = ByteArray(size)
+//        inputStream.read(buffer)
+//        inputStream.close()
+//
+//        val defaultJson = String(buffer, Charsets.UTF_8)
+//        saveJSONToFile(context, fileName, defaultJson) // 파일 저장
+//        Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+//        return defaultJson
+    }
+
+    private fun loadJSON(context: Context, fileName: String): String? {
+        return try {
+            val file = File(context.filesDir, fileName)
+            if (file.exists()) {
+                val jsonData = file.readText()
+                Log.d("PlaceFragment", "로드된 JSON 데이터: $jsonData") // 확인용 로그
+                jsonData
+            } else {
+                Log.w("PlaceFragment", "JSON 파일이 존재하지 않습니다.")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("PlaceFragment", "JSON 로드 중 오류 발생: ${e.message}")
+            null
+        }
+    }
+
+    private fun saveUpdatedJSON() {
+        try {
+            // 기존 JSON 데이터 읽기
+            val jsonString = loadJSON(requireContext(), "exhibition_data.json")
+            val jsonObject = if (jsonString != null) {
+                JSONObject(jsonString)
+            } else {
+                JSONObject().apply {
+                    put("venues", JSONArray())
+                    put("events", JSONArray())
+                    put("reviews", JSONArray())
+                }
+            }
+
+            // venues 업데이트
+            jsonObject.put("venues", JSONArray(venuesList))
+
+            // 파일에 저장
+            saveJSONToFile(requireContext(), "exhibition_data.json", jsonObject.toString())
+            Log.d("PlaceFragment", "JSON 업데이트 완료: ${jsonObject.toString(2)}") // 확인용 로그
+        } catch (e: Exception) {
+            Log.e("PlaceFragment", "JSON 업데이트 중 오류 발생: ${e.message}")
+            Toast.makeText(requireContext(), "데이터 저장 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveJSONToFile(context: Context, fileName: String, jsonString: String) {
+        try {
+            val file = File(context.filesDir, fileName)
+            file.writeText(jsonString)
+            Log.d("PlaceFragment", "JSON 파일 저장 완료: ${file.absolutePath}")
+        } catch (e: Exception) {
+            Log.e("PlaceFragment", "JSON 파일 저장 중 오류 발생: ${e.message}")
+        }
     }
 }

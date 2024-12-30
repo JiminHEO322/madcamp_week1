@@ -10,16 +10,28 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.exhibition.R
 import com.example.exhibition.model.Review
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
+import java.io.InputStream
 
 
 class ReviewDetailActivity : AppCompatActivity() {
+
+    private lateinit var reviews: JSONArray
+    private lateinit var events: JSONArray
 
     private lateinit var date_textView: TextView
     private lateinit var date_editText: EditText
     private lateinit var content_textView: TextView
     private lateinit var content_editText: EditText
+
+    private var reviewId : Int = 0
     private var isEditing: Boolean = false
+
+    private val fileName: String = "exhibition_data.json"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,24 +41,37 @@ class ReviewDetailActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val reviewJsonString = intent.getStringExtra("review_data")
-        
-        // 수정 필요
-        val review = JSONObject(reviewJsonString)
-        val imageName = review.getString("image")
-        val imageResId = resources.getIdentifier(imageName, "drawable", packageName)
+        val jsonString = initializeDefaultJSON(this)
 
-        findViewById<ImageView>(R.id.detailReviewImage).setImageResource(imageResId)
-        findViewById<TextView>(R.id.detailReviewTitle).text = title
+        if (jsonString != null) {
+            val jsonObject = JSONObject(jsonString)
+            events = jsonObject.getJSONArray("events")
+            reviews = jsonObject.getJSONArray("reviews")
 
-        // 뷰 초기화
-        date_textView = findViewById(R.id.detailReviewDate)
-        date_editText = findViewById(R.id.editDate)
-        content_textView = findViewById(R.id.detailReviewContent)
-        content_editText = findViewById(R.id.editContent)
+            reviewId = intent.getIntExtra("review_id", 0)
+            Log.d("ReviewDetailActivity", "받은 reviewIdString: $reviewId")
 
-        date_editText.visibility = android.view.View.GONE
-        content_editText.visibility = android.view.View.GONE
+            val review = findReview(reviewId)
+            val event = findEvent(reviewId)
+
+            val imageName = review.getString("image")
+            val imageResId = resources.getIdentifier(imageName, "drawable", packageName)
+
+            findViewById<ImageView>(R.id.detailReviewImage).setImageResource(imageResId)
+            findViewById<TextView>(R.id.detailReviewTitle).text = event.getString("title")
+
+            // 뷰 초기화
+            date_textView = findViewById(R.id.detailReviewDate)
+            date_editText = findViewById(R.id.editDate)
+            content_textView = findViewById(R.id.detailReviewContent)
+            content_editText = findViewById(R.id.editContent)
+
+            date_editText.visibility = android.view.View.GONE
+            content_editText.visibility = android.view.View.GONE
+
+            date_textView.text = review.getString("date")
+            content_textView.text = review.getString("content")
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -112,5 +137,116 @@ class ReviewDetailActivity : AppCompatActivity() {
         // 수정된 텍스트를 TextView에 반영
         date_textView.text = date_editText.text.toString()
         content_textView.text = content_editText.text.toString()
+
+        // 수정된 텍스트를 JSON 파일에 반영
+        for (i in 0 until reviews.length()) {
+            val review = reviews.getJSONObject(i)
+            if (review.getInt("review_id") == reviewId) {
+                val date = date_editText.text.toString()
+                val content = content_editText.text.toString()
+
+                review.put("date", date)
+                review.put("content", content)
+
+                saveUpdatedJSON()
+                Log.d("EventFragment", "이벤트 상태 변경 및 저장 완료: ${review.toString(2)}")
+
+                break
+            }
+        }
+    }
+
+    private fun findReview(reviewId: Int): JSONObject {
+        for (i in 0 until reviews.length()){
+            val review = reviews.getJSONObject(i)
+            if (review.getInt("review_id") == reviewId){
+                return review
+            }
+        }
+        return JSONObject()
+    }
+
+    private fun findEvent(eventId: Int): JSONObject {
+        for (i in 0 until events.length()){
+            val event = events.getJSONObject(i)
+            if (event.getInt("event_id") == eventId){
+                return event
+            }
+        }
+        return JSONObject()
+    }
+
+    private fun initializeDefaultJSON(context: Context): String? {
+        val file = File(context.filesDir, fileName)
+        if (!file.exists()) {
+            try {
+                val inputStream: InputStream = context.assets.open(fileName)
+                val size = inputStream.available()
+                val buffer = ByteArray(size)
+                inputStream.read(buffer)
+                inputStream.close()
+
+                val defaultJson = String(buffer, Charsets.UTF_8)
+                saveJSONToFile(context, defaultJson) // 파일 저장
+                Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+                return defaultJson
+            } catch (e: Exception) {
+                Log.e("PlaceFragment", "기본 JSON 파일 초기화 중 오류 발생: ${e.message}")
+            }
+        }
+        return loadJSON(context) // 파일이 있으면 로드
+    }
+
+    private fun loadJSON(context: Context): String? {
+        return try {
+            val file = File(context.filesDir, fileName)
+            if (file.exists()) {
+                val jsonData = file.readText()
+                Log.d("ReviewDetailActivity", "로드된 JSON 데이터: $jsonData") // 확인용 로그
+                jsonData
+            } else {
+                Log.w("ReviewDetailActivity", "JSON 파일이 존재하지 않습니다.")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("ReviewDetailActivity", "JSON 로드 중 오류 발생: ${e.message}")
+            null
+        }
+    }
+
+    private fun saveUpdatedJSON() {
+        try {
+            // 기존 JSON 데이터 읽기
+            val jsonString = loadJSON(this)
+            val jsonObject = if (jsonString != null) {
+                JSONObject(jsonString)
+            } else {
+                JSONObject().apply {
+                    put("venues", JSONArray())
+                    put("events", JSONArray())
+                    put("reviews", JSONArray())
+                }
+            }
+
+            jsonObject.put("events", events)
+            jsonObject.put("reviews", reviews)
+
+            // 파일에 저장
+            saveJSONToFile(this, jsonObject.toString())
+            Log.d("ReviewDetailActivity", "JSON 업데이트 완료: ${jsonObject.toString(2)}") // 확인용 로그
+        } catch (e: Exception) {
+            Log.e("ReviewDetailActivity", "JSON 업데이트 중 오류 발생: ${e.message}")
+            Toast.makeText(this, "데이터 저장 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveJSONToFile(context: Context, jsonString: String) {
+        try {
+            val file = File(context.filesDir, fileName)
+            file.writeText(jsonString)
+            Log.d("ReviewDetailActivity", "JSON 파일 저장 완료: ${file.absolutePath}")
+        } catch (e: Exception) {
+            Log.e("ReviewDetailActivity", "JSON 파일 저장 중 오류 발생: ${e.message}")
+        }
     }
 }

@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.exhibition.R
 import com.example.exhibition.getVenueLocation
-import com.example.exhibition.loadJSONFromAsset
 import com.example.exhibition.toMutableList
 import android.widget.TextView
 import android.widget.ImageView

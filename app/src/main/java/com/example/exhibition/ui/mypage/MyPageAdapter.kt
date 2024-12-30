@@ -28,14 +28,14 @@ class MyPageAdapter(
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        val event: JSONObject = reviews[position]
-        val imageName = event.getString("image")
+        val review: JSONObject = reviews[position]
+        val imageName = if (review.has("image")) review.getString("image") else "default_image"
         val imageResId = context.resources.getIdentifier(imageName, "drawable", context.packageName)
 
         holder.imageView.setImageResource(imageResId)
 
         holder.itemView.setOnClickListener{
-            onItemClick(event)
+            onItemClick(review)
         }
     }
 
