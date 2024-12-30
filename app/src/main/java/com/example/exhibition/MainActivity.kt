@@ -10,7 +10,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.exhibition.databinding.ActivityMainBinding
 import com.example.exhibition.ui.place.PlaceAdapter
 import com.example.exhibition.ui.place.PlaceFragment
-
+import android.graphics.Color
+import android.content.res.ColorStateList
+import androidx.core.content.ContextCompat
 
 
 class MainActivity : AppCompatActivity() {
@@ -40,6 +42,22 @@ class MainActivity : AppCompatActivity() {
             )
             setupActionBarWithNavController(navController, appBarConfiguration)
             navView.setupWithNavController(navController)
+
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                when (destination.id) {
+                    R.id.navigation_dashboard -> { // 두 번째 탭
+                        navView.setBackgroundColor(Color.TRANSPARENT) // 투명
+                        navView.itemIconTintList = ColorStateList.valueOf(Color.WHITE)
+                        navView.itemTextColor = ColorStateList.valueOf(Color.WHITE) // 텍스트 흰색
+                    }
+                    else -> {
+                        navView.setBackgroundColor(getColor(R.color.white)) // 기본 색상
+                        navView.itemIconTintList = ColorStateList.valueOf(Color.BLACK)
+                        navView.itemTextColor = ColorStateList.valueOf(Color.BLACK)// 기본 텍스트 색상
+                    }
+                }
+            }
         }
+
     }
 }

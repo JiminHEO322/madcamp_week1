@@ -24,6 +24,14 @@ import com.example.exhibition.getVenueLocation
 import com.example.exhibition.toMutableList
 import org.json.JSONArray
 import org.json.JSONObject
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import android.location.Location
+import android.content.pm.PackageManager
+import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+
 
 class PlaceFragment : Fragment() {
 
@@ -35,14 +43,20 @@ class PlaceFragment : Fragment() {
 
     private lateinit var adapter: PlaceAdapter
     private lateinit var venues: JSONArray
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var venuesList = mutableListOf<JSONObject>()
     private var isLikeFilterEnabled: Boolean = false
+    private var isSortedByDistance: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+
         val placeViewModel =
             ViewModelProvider(this).get(PlaceViewModel::class.java)
 
@@ -54,6 +68,8 @@ class PlaceFragment : Fragment() {
             val jsonObject = JSONObject(jsonString)
             venues = jsonObject.getJSONArray("venues")
             venuesList = venues.toMutableList()
+            venuesList.sortBy { it.getString("name")}
+
             val events = jsonObject.getJSONArray("events")
 
             adapter = PlaceAdapter(
@@ -92,6 +108,8 @@ class PlaceFragment : Fragment() {
                     // 입력 후의 상태
                 }
             })
+            binding.sortToggleButton.setOnClickListener { toggleDistanceFilter() }
+            adapter.updateData(venuesList) // 초기에 가나다순으로 정렬
         }
         else {
             Toast.makeText(requireContext(), "장소 데이터를 로드할 수 없습니다.", Toast.LENGTH_SHORT).show()
@@ -124,5 +142,99 @@ class PlaceFragment : Fragment() {
 
     private fun filterLike(): MutableList<JSONObject> {
         return venuesList.filter { it.getBoolean("isLike") }.toMutableList()
+    }
+
+    private fun toggleDistanceFilter() {
+        isSortedByDistance = !isSortedByDistance
+        if (!isSortedByDistance) {
+            // 가나다순 정렬
+            venuesList.sortBy { it.getString("name")}
+            adapter.updateData(venuesList)
+            binding.sortToggleButton.text = "가나다순"
+        } else {
+            checkLocationPermission()
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    Toast.makeText(requireContext(), "현재 위치: $latitude, $longitude", Toast.LENGTH_SHORT).show()
+                    venuesList.sortBy {
+                        val itsLatitude = it.optDouble("latitude", 0.0)
+                        val itsLongitude = it.optDouble("longitude", 0.0)
+                        val distance = calculateDistance(itsLatitude, itsLongitude, latitude, longitude)
+                        distance
+                    }
+                    adapter.updateData(venuesList)
+                    binding.sortToggleButton.text = "거리순"
+                } else {
+                    Toast.makeText(requireContext(), "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
+    }
+
+    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val dLat = (lat2 - lat1)
+        val dLon = (lon2 - lon1)
+        return Math.sqrt(Math.pow(dLat,2.0) + Math.pow(dLon,2.0))
+    }
+
+    private fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // 권한 요청
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            // 권한이 이미 허용된 경우
+            getLastLocation()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation() // 권한 승인 후 위치 가져오기
+            } else {
+                Toast.makeText(requireContext(), "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+    }
+
+    private fun getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    // 위치 데이터 활용
+                } else {
+                    Toast.makeText(requireContext(), "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 }

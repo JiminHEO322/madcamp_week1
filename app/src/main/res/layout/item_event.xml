@@ -14,7 +14,8 @@
         <ImageView
             android:id="@+id/eventImage"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="210dp"
+            android:layout_marginTop="20dp"/>
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -37,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="4dp"
-            android:layout_weight="2">
+            android:layout_weight="7">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Item Name"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"/>
 
@@ -61,7 +62,7 @@
                     android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:text="Location"
-                    android:textSize="10sp"
+                    android:textSize="11sp"
                     android:textColor="@android:color/black"/>
 
                 <TextView
@@ -71,7 +72,7 @@
                     android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:text="24.02.10-24.15.01"
-                    android:textSize="10sp"
+                    android:textSize="11sp"
                     android:textColor="@android:color/black"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

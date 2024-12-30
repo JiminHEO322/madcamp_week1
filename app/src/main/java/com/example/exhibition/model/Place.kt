@@ -10,5 +10,7 @@ data class Place (
     val url: String,
     val instagram: String,
     val youtube: String,
-    var isLike : Boolean = false
+    var isLike : Boolean = false,
+    val latitude: Double,
+    val longitude: Double
 )
