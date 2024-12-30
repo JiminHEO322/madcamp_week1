@@ -55,7 +55,7 @@ class PlaceFragment : Fragment() {
     ): View {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
+        checkLocationPermission()
 
         val placeViewModel =
             ViewModelProvider(this).get(PlaceViewModel::class.java)
@@ -157,7 +157,6 @@ class PlaceFragment : Fragment() {
                 if (location != null) {
                     val latitude = location.latitude
                     val longitude = location.longitude
-                    Toast.makeText(requireContext(), "현재 위치: $latitude, $longitude", Toast.LENGTH_SHORT).show()
                     venuesList.sortBy {
                         val itsLatitude = it.optDouble("latitude", 0.0)
                         val itsLongitude = it.optDouble("longitude", 0.0)

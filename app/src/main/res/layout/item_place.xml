@@ -15,16 +15,22 @@
     android:layout_marginBottom="0dp">
 
     <!-- 장소 이미지 -->
-    <ImageView
-        android:id="@+id/imageView"
+    <androidx.cardview.widget.CardView
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/sample_image" />
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#252525"
+        app:strokeWidth="10dp"
+        app:strokeColor="#252525">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_image"/>
+    </androidx.cardview.widget.CardView>
 
-    <!-- 텍스트 정보 -->
-
-    <!-- 진행 중 -->
 
     <LinearLayout
         android:layout_width="220dp"
@@ -37,7 +43,8 @@
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="7dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="14dp"
             android:text="예술의 전당"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -56,13 +63,15 @@
                 android:layout_height="wrap_content"
                 android:text="서울특별시 서초구"
                 android:textColor="@android:color/black"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:layout_marginTop="2dp"/>
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp">
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
@@ -75,13 +84,14 @@
                 android:text="1668-1352"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:layout_marginLeft="2dp" />
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="2dp"/>
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+         android:layout_height="80dp"
         android:layout_weight="1"
         android:orientation="vertical">
         <LinearLayout
@@ -100,7 +110,8 @@
                 android:id="@+id/exNumTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginTop="2dp"
                 android:gravity="center"
                 android:text="112"
                 android:textColor="@android:color/holo_red_dark"

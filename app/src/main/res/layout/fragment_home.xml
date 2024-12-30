@@ -28,13 +28,14 @@
                 android:textColorHint="@color/white"
                 android:backgroundTint="#FFFFFF"
                 android:padding="8dp"
-                android:layout_marginRight="20dp"/>
+                android:textColor="@color/white"
+                android:layout_marginRight="16dp"/>
 
             <ImageView
                 android:id="@+id/likeFilterImageView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginLeft="4dp"
+                android:layout_marginLeft="0dp"
                 android:src="@drawable/icon_like"
                 android:layout_marginTop="14dp" />
             <TextView
@@ -42,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
+                android:layout_marginRight="8dp"
                 android:text="관심"
                 android:textSize="16sp"
                 android:textColor="@color/white" />
@@ -52,7 +53,8 @@
                 android:layout_height="wrap_content"
                 android:text="가나다순"
                 android:textSize="16sp"
-                android:padding="4dp" />
+                android:padding="4dp"
+                android:background="@android:color/transparent"/>
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

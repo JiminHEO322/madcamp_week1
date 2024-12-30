@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.exhibition.R
 import com.example.exhibition.MainActivity
+import android.view.View
 
 
 class SplashActivity : AppCompatActivity() {
@@ -16,6 +17,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
 
         val pictureImage = findViewById<ImageView>(R.id.pictureImage)
         val pictureCutImage = findViewById<ImageView>(R.id.pictureCutImage)
