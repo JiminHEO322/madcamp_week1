@@ -274,6 +274,7 @@ class ReviewDetailActivity : AppCompatActivity() {
             content_textView.visibility = android.view.View.VISIBLE
 
             changeImageButton.visibility = android.view.View.GONE
+            Toast.makeText(this, "리뷰가 저장되었습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 

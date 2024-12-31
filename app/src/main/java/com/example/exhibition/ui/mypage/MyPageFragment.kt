@@ -51,6 +51,8 @@ class MyPageFragment : Fragment() {
             val jsonObject = JSONObject(jsonString)
             events = jsonObject.getJSONArray("events").toMutableList()
             reviews = jsonObject.getJSONArray("reviews").toMutableList()
+            reviews.sortBy { it.optString("date") }
+
             Log.d("MyPageFragment", "reviews: $reviews")
 
             val performanceNumber = getPerformanceNumber()
@@ -95,6 +97,8 @@ class MyPageFragment : Fragment() {
             val updatedJsonObject = JSONObject(updatedJsonString)
             reviews.clear() // 기존 데이터를 삭제
             reviews.addAll(updatedJsonObject.getJSONArray("reviews").toMutableList())
+            reviews.sortBy { it.optString("date") }
+
 
             val performanceNumber = getPerformanceNumber()
             val exhibitionNumber = reviews.size - performanceNumber
