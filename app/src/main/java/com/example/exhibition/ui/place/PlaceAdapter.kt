@@ -45,6 +45,7 @@ class PlaceAdapter(private val context: Context,
         val imageResId = context.resources.getIdentifier(imageName, "drawable", context.packageName)
         val exList: MutableList<JSONObject> = getEx(placeId)
 
+
         holder.imageView.setImageResource(imageResId)
         holder.titleTextView.text = place.getString("name")
         holder.addressTextView.text = place.getString("address")

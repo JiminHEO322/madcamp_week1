@@ -19,7 +19,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/frame_light" />
+            android:src="@drawable/frame_light1" />
     </FrameLayout>
 
 

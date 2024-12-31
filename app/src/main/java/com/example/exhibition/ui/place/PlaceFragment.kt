@@ -156,24 +156,38 @@ class PlaceFragment : Fragment() {
     }
 
     private fun toggleLikeState(likedPlace: JSONObject, jsonObject: JSONObject) {
-        Log.d("PlaceFragment", "likedplace: $likedPlace")
-        for (i in 0 until venues.length()) {
-            val venue = venues.getJSONObject(i)
-            if (venue.getInt("venue_id") == likedPlace.get("venue_id")) {
-                val currentLikeState = venue.getBoolean("isLike")
-                venue.put("isLike", !currentLikeState)
+        try {
+            val venueId = likedPlace.getInt("venue_id")
+            var updatedIndex = -1
 
-                saveJSONToFile(requireContext(), "exhibition_data.json", jsonObject.toString())
-                Log.d("PlaceFragment", "isLike 상태 변경 완료: ${venue.toString(2)}")
-                val savedFile = loadJSON(requireContext(), "exhibition_data.json")
-                Log.d("PlaceFragment", "savedFile : $savedFile")
-
-                adapter.notifyItemChanged(i)
-
-                saveUpdatedJSON()
+            // venues 배열에서 venue_id에 해당하는 항목을 찾고 수정
+            for (i in 0 until venues.length()) {
+                val venue = venues.getJSONObject(i)
+                if (venue.getInt("venue_id") == venueId) {
+                    // Like 상태 반전
+                    val currentLikeState = venue.getBoolean("isLike")
+                    venue.put("isLike", !currentLikeState)
+                    updatedIndex = i
+                    break
+                }
             }
+
+            if (updatedIndex != -1) {
+                // JSON 파일 업데이트
+                saveJSONToFile(requireContext(), "exhibition_data.json", jsonObject.toString())
+                Log.d("PlaceFragment", "isLike 상태 변경 완료: ${venues.getJSONObject(updatedIndex).toString(2)}")
+
+                // 정렬된 리스트에서 해당 venue_id의 위치를 찾아 UI 갱신
+                val filteredIndex = venuesList.indexOfFirst { it.getInt("venue_id") == venueId }
+                if (filteredIndex != -1) {
+                    adapter.notifyItemChanged(filteredIndex)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("PlaceFragment", "toggleLikeState 중 오류 발생: ${e.message}")
         }
     }
+
 
     private fun filterLike(): MutableList<JSONObject> {
         return venuesList.filter { it.getBoolean("isLike") }.toMutableList()
@@ -275,7 +289,8 @@ class PlaceFragment : Fragment() {
 
 
     private fun initializeDefaultJSON(context: Context, fileName: String): String? {
-        /*
+/*
+        // 두번째부터 이거로
         val file = File(context.filesDir, fileName)
         if (!file.exists()) {
             try {
@@ -294,8 +309,11 @@ class PlaceFragment : Fragment() {
             }
         }
         return loadJSON(context, fileName) // 파일이 있으면 로드
-         */
 
+
+
+ */
+        // json파일 변경하고 처음 실행할때
         val inputStream: InputStream = context.assets.open(fileName)
         val size = inputStream.available()
         val buffer = ByteArray(size)
@@ -306,6 +324,7 @@ class PlaceFragment : Fragment() {
         saveJSONToFile(context, fileName, defaultJson) // 파일 저장
         Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
         return defaultJson
+
     }
 
     private fun loadJSON(context: Context, fileName: String): String? {
