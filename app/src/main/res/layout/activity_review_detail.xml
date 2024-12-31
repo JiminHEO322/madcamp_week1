@@ -21,49 +21,112 @@
         android:id="@+id/detailReviewTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:paddingTop="15dp"
+        android:paddingLeft="8dp"
         android:text="Title"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="#ffffff"/>
+        android:textColor="@color/white"/>
 
-    <TextView
-        android:id="@+id/detailReviewDate"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:textSize="18sp"
-        android:textColor="#ffffff"/>
+        android:layout_height="1dp"
+        android:layout_marginVertical="15dp"
+        android:background="@color/lightgray" />
 
-    <EditText
-        android:id="@+id/editDate"
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:hint="관람한 날짜 입력하기"
-        android:textColorHint="@color/lightgray"
-        android:textSize="18sp"
-        android:textColor="#ffffff"
-        android:visibility="gone"/>
+        android:layout_height="match_parent">
+        <TableRow>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="관람 일자"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
 
+            <TextView
+                android:id="@+id/detailReviewDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textSize="18sp"
+                android:textColor="@color/white"/>
 
-    <TextView
-        android:id="@+id/detailReviewContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:textSize="18sp"
-        android:textColor="#ffffff"/>
+            <EditText
+                android:id="@+id/editDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:hint="관람한 날짜 입력"
+                android:textColorHint="@color/lightgray"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/lightgray"
+                android:visibility="gone"/>
+        </TableRow>
 
-    <EditText
-        android:id="@+id/editContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:hint="리뷰 입력하기"
-        android:textColorHint="@color/lightgray"
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:visibility="gone"/>
+        <TableRow>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="한 줄 평"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/detailReviewSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textSize="18sp"
+                android:textColor="@color/white"/>
+
+            <EditText
+                android:id="@+id/editSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:hint="한줄평 입력"
+                android:textColorHint="@color/lightgray"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/lightgray"
+                android:lineSpacingMultiplier="1.2"
+                android:visibility="gone"/>
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="15dp"
+            android:background="@color/lightgray" />
+
+        <TextView
+            android:id="@+id/detailReviewContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:lineSpacingMultiplier="1.2"/>
+
+        <EditText
+            android:id="@+id/editContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:hint="리뷰 입력"
+            android:textColorHint="@color/lightgray"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/lightgray"
+            android:lineSpacingMultiplier="1.2"
+            android:visibility="gone"/>
+    </TableLayout>
 
 </LinearLayout>

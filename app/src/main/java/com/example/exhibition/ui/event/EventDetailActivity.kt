@@ -9,9 +9,11 @@ import com.example.exhibition.R
 import org.json.JSONArray
 import org.json.JSONObject
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import com.example.exhibition.toMutableList
+import com.example.exhibition.ui.mypage.ReviewDetailActivity
 import java.io.File
 import java.io.InputStream
 
@@ -23,6 +25,7 @@ class EventDetailActivity : AppCompatActivity() {
 
     private lateinit var events: JSONArray
     private lateinit var reviews: JSONArray
+    private var eventId: Int = 0
     private val fileName: String = "exhibition_data.json"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,17 +37,35 @@ class EventDetailActivity : AppCompatActivity() {
             title = "상세 정보"
         }
 
+        updateView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("EventDetailActivty", "RESUME")
+
+        setContentView(R.layout.activity_event_detail)
+
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = "상세 정보"
+        }
+
+        updateView()
+    }
+
+    private fun updateView(){
         val jsonString = initializeDefaultJSON(this)
         val jsonObject = JSONObject(jsonString)
         events = jsonObject.getJSONArray("events")
         reviews = jsonObject.getJSONArray("reviews")
 
-        val eventId = intent.getStringExtra("event_id")
+        eventId = intent.getIntExtra("event_id", 0)
         val location = intent.getStringExtra("event_location")
+        Log.d("EventDetailActivity", "received event id : $eventId")
 
-        if (eventId != null) {
-            val eventJsonObject = findJsonObject(eventId.toInt())
-            val eventId = eventJsonObject.getInt("event_id")
+        if (eventId != 0) {
+            val eventJsonObject = findJsonObject(eventId)
             val title = eventJsonObject.getString("title")
             val date = eventJsonObject.getString("date")
             val imageName = eventJsonObject.getString("image")
@@ -60,14 +81,20 @@ class EventDetailActivity : AppCompatActivity() {
 
             Log.d("EventDetailActivity", "eventId: $eventId,  isViewed: $isViewed")
             saveImageView.setImageResource(
-                if (isViewed) R.drawable.save_viewed else R.drawable.save_unviewed
+                if (isViewed) R.drawable.review_on else R.drawable.review_off
             )
             Log.d("EventDetailActivity", "isViewed: $isViewed")
 
 
             saveImageView.setOnClickListener{
-//                toggleImage(eventJsonObject)
-                toggleState(eventId)
+                if (isViewed) {
+                    val eventIntent = Intent(this, ReviewDetailActivity::class.java).apply{
+                        putExtra("review_id", eventId)
+                    }
+                    startActivity(eventIntent)
+                } else {
+                    toggleState(eventId)
+                }
             }
         }
     }
@@ -90,7 +117,7 @@ class EventDetailActivity : AppCompatActivity() {
 
                 isViewed = newViewedState
                 saveImageView.setImageResource(
-                    if (isViewed) R.drawable.save_viewed else R.drawable.save_unviewed
+                    if (isViewed) R.drawable.review_on else R.drawable.review_off
                 )
                 Log.d("EventDetailActivity", "UI 업데이트 완료: isViewed=$isViewed")
 
@@ -202,12 +229,15 @@ class EventDetailActivity : AppCompatActivity() {
         val defaultReviewImage = findImage(eventId)
 
         val newReview = JSONObject().apply {
-            put("review_id", eventId) // 리뷰 ID는 배열 길이에 +1
+            put("review_id", eventId)   // review_id는 event_id와 같도록 설정
             put("image", defaultReviewImage)
             put("date", "") // 현재 날짜를 가져오는 함수 호출
+            put("summary", "") // 한줄평
             put("content", "") // 리뷰 내용
         }
         reviews.put(newReview) // reviews 배열에 추가
+
+        Toast.makeText(this, "My Page에 추가되었습니다", Toast.LENGTH_SHORT).show()
     }
 
     private fun findImage(eventId: Int): String {

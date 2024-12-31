@@ -65,7 +65,7 @@ class EventFragment : Fragment() {
             val topAdapter = EventAdapter(requireContext(), venues, topEvents) { selectedEvent ->
                 val selectedVenue = getVenueLocation(venues, selectedEvent.getInt("venue_id"))
                 val intent = Intent(requireContext(), EventDetailActivity::class.java).apply {
-                    putExtra("event_id", selectedEvent.getString("event_id"))
+                    putExtra("event_id", selectedEvent.getInt("event_id"))
                     putExtra("event_location", selectedVenue)
                 }
                 startActivity(intent)
@@ -74,7 +74,7 @@ class EventFragment : Fragment() {
             val bottomAdapter = EventAdapter(requireContext(), venues, bottomEvents) { selectedEvent ->
                 val selectedVenue = getVenueLocation(venues, selectedEvent.getInt("venue_id"))
                 val intent = Intent(requireContext(), EventDetailActivity::class.java).apply {
-                    putExtra("event_id", selectedEvent.getString("event_id"))
+                    putExtra("event_id", selectedEvent.getInt("event_id"))
                     putExtra("event_location", selectedVenue)
                 }
                 startActivity(intent)
