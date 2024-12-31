@@ -160,34 +160,34 @@ class PlaceFragment : Fragment() {
     }
 
     private fun initializeDefaultJSON(context: Context, fileName: String): String? {
-        val file = File(context.filesDir, fileName)
-        if (!file.exists()) {
-            try {
-                val inputStream: InputStream = context.assets.open(fileName)
-                val size = inputStream.available()
-                val buffer = ByteArray(size)
-                inputStream.read(buffer)
-                inputStream.close()
-
-                val defaultJson = String(buffer, Charsets.UTF_8)
-                saveJSONToFile(context, fileName, defaultJson) // 파일 저장
-                Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
-                return defaultJson
-            } catch (e: Exception) {
-                Log.e("PlaceFragment", "기본 JSON 파일 초기화 중 오류 발생: ${e.message}")
-            }
-        }
-        return loadJSON(context, fileName) // 파일이 있으면 로드
-//        val inputStream: InputStream = context.assets.open(fileName)
-//        val size = inputStream.available()
-//        val buffer = ByteArray(size)
-//        inputStream.read(buffer)
-//        inputStream.close()
+//        val file = File(context.filesDir, fileName)
+//        if (!file.exists()) {
+//            try {
+//                val inputStream: InputStream = context.assets.open(fileName)
+//                val size = inputStream.available()
+//                val buffer = ByteArray(size)
+//                inputStream.read(buffer)
+//                inputStream.close()
 //
-//        val defaultJson = String(buffer, Charsets.UTF_8)
-//        saveJSONToFile(context, fileName, defaultJson) // 파일 저장
-//        Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
-//        return defaultJson
+//                val defaultJson = String(buffer, Charsets.UTF_8)
+//                saveJSONToFile(context, fileName, defaultJson) // 파일 저장
+//                Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+//                return defaultJson
+//            } catch (e: Exception) {
+//                Log.e("PlaceFragment", "기본 JSON 파일 초기화 중 오류 발생: ${e.message}")
+//            }
+//        }
+//        return loadJSON(context, fileName) // 파일이 있으면 로드
+        val inputStream: InputStream = context.assets.open(fileName)
+        val size = inputStream.available()
+        val buffer = ByteArray(size)
+        inputStream.read(buffer)
+        inputStream.close()
+
+        val defaultJson = String(buffer, Charsets.UTF_8)
+        saveJSONToFile(context, fileName, defaultJson) // 파일 저장
+        Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+        return defaultJson
     }
 
     private fun loadJSON(context: Context, fileName: String): String? {

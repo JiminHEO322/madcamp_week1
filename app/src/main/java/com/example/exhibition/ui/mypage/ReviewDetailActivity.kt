@@ -57,7 +57,7 @@ class ReviewDetailActivity : AppCompatActivity() {
             val review = findReview(reviewId)
             val event = findEvent(reviewId)
 
-            val imageName = review.getString("image")
+            val imageName = review.optString("image", "photo1")
             val imageResId = resources.getIdentifier(imageName, "drawable", packageName)
 
             findViewById<ImageView>(R.id.detailReviewImage).setImageResource(imageResId)
@@ -139,8 +139,10 @@ class ReviewDetailActivity : AppCompatActivity() {
                                 val event = events.getJSONObject(i)
                                 if (event.getInt("event_id") == reviewId) {
                                     event.put("viewed", false)
+                                    break
                                 }
                             }
+                            Log.d("ReviewDetailAcitivty", "리뷰 삭제 완료")
                             saveUpdatedJSON() // JSON 파일 업데이트
 
                             Toast.makeText(this, "리뷰가 삭제되었습니다.", Toast.LENGTH_SHORT).show()

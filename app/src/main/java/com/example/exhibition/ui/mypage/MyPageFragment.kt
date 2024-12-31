@@ -97,7 +97,8 @@ class MyPageFragment : Fragment() {
             Log.d("MyPageFragment", "onResume: 어댑터 데이터 업데이트 완료")
         } else {
             Log.w("MyPageFragment", "onResume: JSON 데이터를 다시 로드할 수 없습니다.")
-        }    }
+        }
+    }
 
     private fun initializeDefaultJSON(context: Context): String? {
         val file = File(context.filesDir, fileName)
