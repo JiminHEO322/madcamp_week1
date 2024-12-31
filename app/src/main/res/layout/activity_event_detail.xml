@@ -41,7 +41,7 @@
 
             <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
                 <TableRow>
                     <TextView
                         android:layout_width="match_parent"
@@ -80,7 +80,38 @@
                         android:textColor="@color/white"/>
                 </TableRow>
 
+                <TableRow>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="출연자"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:id="@+id/detailEventActor"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:text="Name"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </TableRow>
             </TableLayout>
+            <Button
+            android:id="@+id/openUrlButton"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="#3F194C"
+            android:padding="8dp"
+            android:text="예매하기"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_marginLeft="0dp"/>
         </LinearLayout>
 
 
@@ -116,5 +147,6 @@
                 app:layout_constraintTop_toBottomOf="@id/saveButton"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </LinearLayout>
 </LinearLayout>

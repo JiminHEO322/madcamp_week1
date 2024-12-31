@@ -16,6 +16,8 @@ import com.example.exhibition.toMutableList
 import com.example.exhibition.ui.mypage.ReviewDetailActivity
 import java.io.File
 import java.io.InputStream
+import android.widget.Button
+import android.net.Uri
 
 
 class EventDetailActivity : AppCompatActivity() {
@@ -27,6 +29,9 @@ class EventDetailActivity : AppCompatActivity() {
     private lateinit var reviews: JSONArray
     private var eventId: Int = 0
     private val fileName: String = "exhibition_data.json"
+    private lateinit var openUrlButton: Button
+    private var eventUrl: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +75,8 @@ class EventDetailActivity : AppCompatActivity() {
             val date = eventJsonObject.getString("date")
             val imageName = eventJsonObject.getString("image")
             val imageResId = resources.getIdentifier(imageName, "drawable", packageName)
+            val actor = eventJsonObject.getString("actor")
+            eventUrl = eventJsonObject.getString("url")
 
             isViewed = eventJsonObject.getBoolean("viewed")
             saveImageView = findViewById<ImageView>(R.id.saveButton)
@@ -78,6 +85,12 @@ class EventDetailActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.detailEventTitle).text = title
             findViewById<TextView>(R.id.detailEventLocation).text = location
             findViewById<TextView>(R.id.detailEventDate).text = date
+            findViewById<TextView>(R.id.detailEventActor).text = actor
+
+            openUrlButton = findViewById(R.id.openUrlButton)
+            openUrlButton.setOnClickListener {
+                openEventUrl()
+            }
 
             Log.d("EventDetailActivity", "eventId: $eventId,  isViewed: $isViewed")
             saveImageView.setImageResource(
@@ -248,5 +261,14 @@ class EventDetailActivity : AppCompatActivity() {
             }
         }
         return ""
+    }
+
+    private fun openEventUrl() {
+        if (!eventUrl.isNullOrEmpty()) {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(eventUrl))
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "URL이 없습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 }

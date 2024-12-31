@@ -91,8 +91,9 @@ class PlaceDetailActivity : AppCompatActivity() {
             eventAdapter = EventAdapter(this, venues, onEvents) { selectedEvent ->
                 // 클릭 이벤트 처리
                 val selectedVenue = getVenueLocation(venues, selectedEvent.getInt("venue_id"))
+                val eventId = selectedEvent.getInt("event_id")
                 val intent = Intent(this, EventDetailActivity::class.java).apply {
-                    putExtra("event_data", selectedEvent.toString())
+                    putExtra("event_id", eventId)
                     putExtra("event_location", selectedVenue)
                 }
                 startActivity(intent)
