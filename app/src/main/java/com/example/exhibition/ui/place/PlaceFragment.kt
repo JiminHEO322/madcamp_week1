@@ -193,6 +193,7 @@ class PlaceFragment : Fragment() {
                     venue.put("isLike", newLikeState)
 
                     saveUpdatedJSON()
+                    Log.d("PlaceFragment", "update JSON : ${venue.toString()}")
 
                     val filteredIndex = venuesList.indexOfFirst { it.getInt("venue_id") == venueId }
                     if (filteredIndex != -1) {
@@ -327,6 +328,19 @@ class PlaceFragment : Fragment() {
             }
         }
         return loadJSON(context) // 파일이 있으면 로드
+
+
+//         json파일 변경하고 처음 실행할때
+//        val inputStream: InputStream = context.assets.open(fileName)
+//        val size = inputStream.available()
+//        val buffer = ByteArray(size)
+//        inputStream.read(buffer)
+//        inputStream.close()
+//
+//        val defaultJson = String(buffer, Charsets.UTF_8)
+//        saveJSONToFile(context, defaultJson) // 파일 저장
+//        Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+//        return defaultJson
 
     }
 

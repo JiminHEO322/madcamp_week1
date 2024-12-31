@@ -2,6 +2,7 @@ package com.example.exhibition.ui.mypage
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,6 +17,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.icu.util.Calendar
 import android.net.Uri
 import android.util.Base64
 import android.util.Log
@@ -39,7 +41,7 @@ class ReviewDetailActivity : AppCompatActivity() {
 
     private lateinit var imageView: ImageView
     private lateinit var date_textView: TextView
-    private lateinit var date_editText: EditText
+    private lateinit var date_editText: TextView
     private lateinit var summary_textView: TextView
     private lateinit var summary_editText: EditText
     private lateinit var content_textView: TextView
@@ -131,7 +133,33 @@ class ReviewDetailActivity : AppCompatActivity() {
                 checkPermission()
                 openGallery()
             }
+
+            date_editText.setOnClickListener{
+                showDatePickerDialog()
+            }
         }
+    }
+
+    private fun showDatePickerDialog() {
+        // 현재 날짜로 Calendar 객체 생성
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        // DatePickerDialog 생성 및 리스너 등록
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, selectedYear, selectedMonth, selectedDayOfMonth ->
+                // 선택된 날짜 정보를 TextView에 반영
+                // (month는 0부터 시작하므로 +1 해주어야 실제 월과 일치)
+                val selectedDate = "$selectedYear-${selectedMonth + 1}-$selectedDayOfMonth"
+                date_editText.text = selectedDate
+            },
+            year, month, day
+        )
+
+        datePickerDialog.show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

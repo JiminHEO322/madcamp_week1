@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- 내부 배경색(투명으로 설정) -->
+    <solid android:color="@android:color/transparent" />
+
+    <!-- 테두리 선 설정 -->
+    <stroke
+        android:width="1dp"
+        android:color="@android:color/darker_gray" />
+
+    <!-- 모서리 둥글게 처리 (선택사항) -->
+    <corners android:radius="4dp" />
+
+    <!-- 안쪽 여백 (선택사항) -->
+    <padding
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp" />
+</shape>
