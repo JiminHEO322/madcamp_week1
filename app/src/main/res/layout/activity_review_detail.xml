@@ -17,6 +17,15 @@
         android:layout_gravity="center"
         android:contentDescription="@string/image" />
 
+    <ImageView
+        android:id="@+id/changeImageButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginVertical="10dp"
+        android:src="@drawable/ic_change_image"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/detailReviewTitle"
         android:layout_width="match_parent"

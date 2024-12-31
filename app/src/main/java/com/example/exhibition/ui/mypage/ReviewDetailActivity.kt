@@ -1,5 +1,6 @@
 package com.example.exhibition.ui.mypage
 
+import android.Manifest
 import android.app.Activity
 import android.os.Bundle
 import android.view.Menu
@@ -12,11 +13,21 @@ import com.example.exhibition.R
 import com.example.exhibition.model.Review
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Base64
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 
@@ -26,6 +37,7 @@ class ReviewDetailActivity : AppCompatActivity() {
     private lateinit var reviews: JSONArray
     private lateinit var events: JSONArray
 
+    private lateinit var imageView: ImageView
     private lateinit var date_textView: TextView
     private lateinit var date_editText: EditText
     private lateinit var summary_textView: TextView
@@ -38,12 +50,42 @@ class ReviewDetailActivity : AppCompatActivity() {
 
     private val fileName: String = "exhibition_data.json"
 
+    private lateinit var changeImageButton: ImageView
+
+    // 사용자 권한 처리
+    private val REQUEST_PERMISSION = 10
+
+    private lateinit var galleryLauncher: ActivityResultLauncher<Intent>
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review_detail)
 
+        // UI 초기화
+        imageView = findViewById(R.id.detailReviewImage)
+        changeImageButton = findViewById(R.id.changeImageButton)
+        Log.d("ReviewDetailActivity", "ImageView 및 ChangeImageButton 초기화 완료")
+
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
+        }
+
+        galleryLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val selectedImageUri: Uri? = result.data?.data
+                selectedImageUri?.let { uri ->
+                    // 선택된 사진 표시
+                    val bitmap = getBitmapFromUri(uri)
+                    if (bitmap != null) {
+                        imageView.setImageBitmap(bitmap)
+                        val byteArray = bitmapToByteArray(bitmap)
+                        saveImageToJSON(byteArray) // 이미지 데이터를 JSON에 저장
+                    }
+                }
+            }
         }
 
         val jsonString = initializeDefaultJSON(this)
@@ -65,6 +107,8 @@ class ReviewDetailActivity : AppCompatActivity() {
             findViewById<ImageView>(R.id.detailReviewImage).setImageResource(imageResId)
             findViewById<TextView>(R.id.detailReviewTitle).text = event.getString("title")
 
+            loadImageFromJSON()
+
             // 뷰 초기화
             date_textView = findViewById(R.id.detailReviewDate)
             date_editText = findViewById(R.id.editDate)
@@ -76,10 +120,17 @@ class ReviewDetailActivity : AppCompatActivity() {
             date_editText.visibility = android.view.View.GONE
             summary_editText.visibility = android.view.View.GONE
             content_editText.visibility = android.view.View.GONE
+            changeImageButton.visibility = android.view.View.GONE
 
             date_textView.text = review.optString("date", "")
             summary_textView.text = review.optString("summary", "")
             content_textView.text = review.optString("content", "")
+
+            // 이미지 수정
+            changeImageButton.setOnClickListener{
+                checkPermission()
+                openGallery()
+            }
         }
     }
 
@@ -182,6 +233,8 @@ class ReviewDetailActivity : AppCompatActivity() {
             content_editText.visibility = android.view.View.VISIBLE
             content_textView.visibility = android.view.View.GONE
             content_editText.setText(content_textView.text) // 기존 텍스트를 EditText로 설정
+
+            changeImageButton.visibility = android.view.View.VISIBLE
         } else {
             date_editText.visibility = android.view.View.GONE
             date_textView.visibility = android.view.View.VISIBLE
@@ -191,6 +244,8 @@ class ReviewDetailActivity : AppCompatActivity() {
 
             content_editText.visibility = android.view.View.GONE
             content_textView.visibility = android.view.View.VISIBLE
+
+            changeImageButton.visibility = android.view.View.GONE
         }
     }
 
@@ -311,6 +366,98 @@ class ReviewDetailActivity : AppCompatActivity() {
             Log.d("ReviewDetailActivity", "JSON 파일 저장 완료: ${file.absolutePath}")
         } catch (e: Exception) {
             Log.e("ReviewDetailActivity", "JSON 파일 저장 중 오류 발생: ${e.message}")
+        }
+    }
+
+    private fun checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                REQUEST_PERMISSION
+            )
+        } else {
+            // 이미 권한이 허용되어 있음
+            openGallery()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSION) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                openGallery()
+            } else {
+                // 권한 거부됨
+            }
+        }
+    }
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        galleryLauncher.launch(intent)
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
+    }
+
+    private fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+
+    private fun getBitmapFromUri(uri: Uri): Bitmap? {
+        return try {
+            contentResolver.openInputStream(uri)?.use {
+                BitmapFactory.decodeStream(it)
+            }
+        } catch (e: Exception) {
+            Log.e("ReviewDetailActivity", "Bitmap 변환 중 오류 발생: ${e.message}")
+            null
+        }
+    }
+
+    private fun loadImageFromJSON() {
+        for (i in 0 until reviews.length()) {
+            val review = reviews.getJSONObject(i)
+            if (review.getInt("review_id") == reviewId) {
+                val imageValue = review.optString("image", null)
+                val imageResId = resources.getIdentifier(imageValue, "drawable", packageName)
+                if (imageResId != 0){
+                    // drawable 리소스 이름인 경우
+                    imageView.setImageResource(imageResId)
+                    Log.d("ReviewDetailActivity", "이미지(Drawable) 로드 완료")
+                } else{
+                    val byteArray = Base64.decode(imageValue, Base64.DEFAULT)
+                    val bitmap = byteArrayToBitmap(byteArray)
+                    imageView.setImageBitmap(bitmap)
+                    Log.d("ReviewDetailActivity", "이미지(Base64) 로드 완료")
+                }
+
+                break
+            }
+        }
+    }
+
+    private fun saveImageToJSON(byteArray: ByteArray) {
+        val base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+        for (i in 0 until reviews.length()) {
+            val review = reviews.getJSONObject(i)
+            if (review.getInt("review_id") == reviewId) {
+                review.put("image", base64String)
+                saveUpdatedJSON()
+                Log.d("ReviewDetailActivity", "이미지 저장 완료")
+                break
+            }
         }
     }
 }

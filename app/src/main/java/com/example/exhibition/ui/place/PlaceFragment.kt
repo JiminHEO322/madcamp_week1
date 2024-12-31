@@ -201,18 +201,6 @@ class PlaceFragment : Fragment() {
                     break
                 }
             }
-
-//            if (updatedIndex != -1) {
-//                // JSON 파일 업데이트
-//                saveJSONToFile(requireContext(),  jsonObject.toString())
-//                Log.d("PlaceFragment", "isLike 상태 변경 완료: ${venues.getJSONObject(updatedIndex).toString(2)}")
-//
-//                // 정렬된 리스트에서 해당 venue_id의 위치를 찾아 UI 갱신
-//                val filteredIndex = venuesList.indexOfFirst { it.getInt("venue_id") == venueId }
-//                if (filteredIndex != -1) {
-//                    adapter.notifyItemChanged(filteredIndex)
-//                }
-//            }
         } catch (e: Exception) {
             Log.e("PlaceFragment", "toggleLikeState 중 오류 발생: ${e.message}")
         }
@@ -339,21 +327,6 @@ class PlaceFragment : Fragment() {
             }
         }
         return loadJSON(context) // 파일이 있으면 로드
-
-
-
-
-        // json파일 변경하고 처음 실행할때
-//        val inputStream: InputStream = context.assets.open(fileName)
-//        val size = inputStream.available()
-//        val buffer = ByteArray(size)
-//        inputStream.read(buffer)
-//        inputStream.close()
-//
-//        val defaultJson = String(buffer, Charsets.UTF_8)
-//        saveJSONToFile(context, fileName, defaultJson) // 파일 저장
-//        Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
-//        return defaultJson
 
     }
 
