@@ -1,18 +1,21 @@
 package com.example.exhibition.ui.mypage
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exhibition.R
 import com.example.exhibition.model.Review
-import com.example.exhibition.ui.event.EventAdapter.EventViewHolder
+import org.json.JSONArray
+import org.json.JSONObject
 
-class MyPageAdapter (
-    private val reviews: List<Review>,
-    private val onItemClick: (Review) -> Unit
+class MyPageAdapter(
+    private val context: Context,
+    private val reviews: MutableList<JSONObject>,
+    private val onItemClick: (JSONObject) -> Unit
     ) : RecyclerView.Adapter<MyPageAdapter.ReviewViewHolder>() {
 
     class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,13 +29,23 @@ class MyPageAdapter (
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        val event = reviews[position]
-        holder.imageView.setImageResource(event.imageResId)
+        val review: JSONObject = reviews[position]
+        val imageName = if (review.has("image")) review.getString("image") else "default_image"
+        val imageResId = context.resources.getIdentifier(imageName, "drawable", context.packageName)
+
+        holder.imageView.setImageResource(imageResId)
 
         holder.itemView.setOnClickListener{
-            onItemClick(event)
+            onItemClick(review)
         }
     }
 
     override fun getItemCount(): Int = reviews.size
+
+    fun updateData(newReviews: MutableList<JSONObject>) {
+        reviews.clear()
+        reviews.addAll(newReviews)
+        Log.d("mypageadapter", "지워줘ㅓㅓㅓㅓㅓㅓㅓㅓㅓ")
+        notifyDataSetChanged()
+    }
 }

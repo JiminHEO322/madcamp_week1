@@ -1,17 +1,26 @@
 package com.example.exhibition.ui.mypage
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.exhibition.databinding.FragmentMypageBinding
-import com.example.exhibition.R
 import android.content.Intent
-import com.example.exhibition.model.Review
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.recyclerview.widget.RecyclerView
+import com.example.exhibition.R
+import org.json.JSONObject
+import com.example.exhibition.toMutableList
+import com.example.exhibition.ui.place.PlaceAdapter
+import org.json.JSONArray
+import java.io.File
+import java.io.InputStream
 
 
 class MyPageFragment : Fragment() {
@@ -22,42 +31,119 @@ class MyPageFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private lateinit var adapter: MyPageAdapter
+
+    private val fileName: String = "exhibition_data.json"
+    private var reviews = mutableListOf<JSONObject>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMypageBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        val view = inflater.inflate(R.layout.fragment_mypage, container, false)
-        val recyclerView: RecyclerView = view.findViewById(R.id.review_recyclerView)
+//        val root: View = binding.root
+//        val view = inflater.inflate(R.layout.fragment_mypage, container, false)
+//        val recyclerView: RecyclerView = view.findViewById(R.id.review_recyclerView)
 
-        val reviews = listOf(
-            Review(R.drawable.photo1, "우연히 웨스 앤더슨 2", "2024.10.20", "재밌다"),
-            Review(R.drawable.photo2, "뮤지컬 지킬앤하이드", "2024.10.14", "재"),
-            Review(R.drawable.photo3, "피아노 파 드 되", "2024.10.20", "밌"),
-            Review(R.drawable.photo1, "우연히 웨스 앤더슨 2", "2024.10.20", "다"),
-            Review(R.drawable.photo2, "뮤지컬 지킬앤하이드", "2024.10.14", "재"),
-            Review(R.drawable.photo3, "피아노 파 드 되", "2024.10.20", "밌"),
-            Review(R.drawable.photo1, "우연히 웨스 앤더슨 2", "2024.10.20", "다")
-        )
+        // json 데이터 불러오기
+        val jsonString = initializeDefaultJSON(requireContext())
 
-        val adapter = MyPageAdapter(reviews) { selectedReview ->
-            val intent = Intent(requireContext(), ReviewDetailActivity::class.java).apply {
-                putExtra("REVIEW_IMAGE", selectedReview.imageResId)
-                putExtra("REVIEW_TITLE", selectedReview.title)
+        if (jsonString != null) {
+            val jsonObject = JSONObject(jsonString)
+            reviews = jsonObject.getJSONArray("reviews").toMutableList()
+            Log.d("MyPageFragment", "reviews: $reviews")
+
+            adapter = MyPageAdapter(requireContext(), reviews) { selectedReview ->
+                val intent = Intent(requireContext(), ReviewDetailActivity::class.java).apply {
+                    Log.d("MyPageFragment", "selectedReview: ${selectedReview.toString()}")
+                    val reviewId = selectedReview.getInt("review_id")
+                    Log.d("MyPageFragment", "reviewId: $reviewId")
+                    putExtra("review_id", reviewId)
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
+
+            binding.reviewRecyclerView.layoutManager = GridLayoutManager(context, 3)
+            binding.reviewRecyclerView.adapter = adapter
+
+            Log.d("MyPageFragment", "notify!!!!!!!!!!!!11")
+            adapter.notifyDataSetChanged()
+        } else{
+            Toast.makeText(requireContext(), "리뷰가 없습니다.", Toast.LENGTH_SHORT).show()
         }
 
-        binding.reviewRecyclerView.layoutManager = GridLayoutManager(context, 3)
-        binding.reviewRecyclerView.adapter = adapter
-
-        return root
+        return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("MyPageFragment", "RESUME")
+
+        // JSON 파일에서 데이터를 다시 로드
+        val updatedJsonString = loadJSON(requireContext())
+        if (updatedJsonString != null) {
+            val updatedJsonObject = JSONObject(updatedJsonString)
+            reviews.clear() // 기존 데이터를 삭제
+            reviews.addAll(updatedJsonObject.getJSONArray("reviews").toMutableList())
+
+            // 어댑터에 데이터 갱신 알림
+            adapter.notifyDataSetChanged()
+            Log.d("MyPageFragment", "onResume: 어댑터 데이터 업데이트 완료")
+        } else {
+            Log.w("MyPageFragment", "onResume: JSON 데이터를 다시 로드할 수 없습니다.")
+        }    }
+
+    private fun initializeDefaultJSON(context: Context): String? {
+        val file = File(context.filesDir, fileName)
+        if (!file.exists()) {
+            try {
+                val inputStream: InputStream = context.assets.open(fileName)
+                val size = inputStream.available()
+                val buffer = ByteArray(size)
+                inputStream.read(buffer)
+                inputStream.close()
+
+                val defaultJson = String(buffer, Charsets.UTF_8)
+                saveJSONToFile(context, defaultJson) // 파일 저장
+                Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+                return defaultJson
+            } catch (e: Exception) {
+                Log.e("PlaceFragment", "기본 JSON 파일 초기화 중 오류 발생: ${e.message}")
+            }
+        }
+        return loadJSON(context) // 파일이 있으면 로드
+    }
+
+    private fun loadJSON(context: Context): String? {
+        return try {
+            val file = File(context.filesDir, fileName)
+            if (file.exists()) {
+                val jsonData = file.readText()
+                Log.d("PlaceFragment", "로드된 JSON 데이터: $jsonData") // 확인용 로그
+                jsonData
+            } else {
+                Log.w("PlaceFragment", "JSON 파일이 존재하지 않습니다.")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("PlaceFragment", "JSON 로드 중 오류 발생: ${e.message}")
+            null
+        }
+    }
+
+    private fun saveJSONToFile(context: Context, jsonString: String) {
+        try {
+            val file = File(context.filesDir, fileName)
+            file.writeText(jsonString)
+            Log.d("EventFragment", "JSON 파일 저장 완료: ${file.absolutePath}")
+        } catch (e: Exception) {
+            Log.e("EventFragment", "JSON 파일 저장 중 오류 발생: ${e.message}")
+        }
     }
 }
