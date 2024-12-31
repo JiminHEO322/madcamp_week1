@@ -24,6 +24,13 @@ import com.example.exhibition.toMutableList
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import android.location.Location
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+
 
 class PlaceFragment : Fragment() {
 
@@ -35,14 +42,22 @@ class PlaceFragment : Fragment() {
 
     private lateinit var adapter: PlaceAdapter
     private lateinit var venues: JSONArray
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var venuesList = mutableListOf<JSONObject>()
     private var isLikeFilterEnabled: Boolean = false
+    private var isSortedByDistance: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        checkLocationPermission()
+
+        val placeViewModel =
+            ViewModelProvider(this).get(PlaceViewModel::class.java)
 //        val placeViewModel =
 //            ViewModelProvider(this).get(PlaceViewModel::class.java)
 
@@ -69,6 +84,9 @@ class PlaceFragment : Fragment() {
             val jsonObject = JSONObject(jsonString)
             venues = jsonObject.getJSONArray("venues") ?: JSONArray()
             venuesList = venues.toMutableList()
+            venuesList.sortBy { it.getString("name")}
+
+
 
             val events = jsonObject.getJSONArray("events")?: JSONArray()
 
@@ -112,6 +130,8 @@ class PlaceFragment : Fragment() {
                     // 입력 후의 상태
                 }
             })
+            binding.sortToggleButton.setOnClickListener { toggleDistanceFilter() }
+            adapter.updateData(venuesList) // 초기에 가나다순으로 정렬
 
 
         }
@@ -159,35 +179,130 @@ class PlaceFragment : Fragment() {
         return venuesList.filter { it.getBoolean("isLike") }.toMutableList()
     }
 
-    private fun initializeDefaultJSON(context: Context, fileName: String): String? {
-//        val file = File(context.filesDir, fileName)
-//        if (!file.exists()) {
-//            try {
-//                val inputStream: InputStream = context.assets.open(fileName)
-//                val size = inputStream.available()
-//                val buffer = ByteArray(size)
-//                inputStream.read(buffer)
-//                inputStream.close()
-//
-//                val defaultJson = String(buffer, Charsets.UTF_8)
-//                saveJSONToFile(context, fileName, defaultJson) // 파일 저장
-//                Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
-//                return defaultJson
-//            } catch (e: Exception) {
-//                Log.e("PlaceFragment", "기본 JSON 파일 초기화 중 오류 발생: ${e.message}")
-//            }
-//        }
-//        return loadJSON(context, fileName) // 파일이 있으면 로드
-        val inputStream: InputStream = context.assets.open(fileName)
-        val size = inputStream.available()
-        val buffer = ByteArray(size)
-        inputStream.read(buffer)
-        inputStream.close()
+    private fun toggleDistanceFilter() {
+        isSortedByDistance = !isSortedByDistance
+        if (!isSortedByDistance) {
+            // 가나다순 정렬
+            venuesList.sortBy { it.getString("name")}
+            adapter.updateData(venuesList)
+            binding.sortToggleButton.text = "가나다순"
+        } else {
+            checkLocationPermission()
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    Toast.makeText(requireContext(), "현재 위치: $latitude, $longitude", Toast.LENGTH_SHORT).show()
+                    venuesList.sortBy {
+                        val itsLatitude = it.optDouble("latitude", 0.0)
+                        val itsLongitude = it.optDouble("longitude", 0.0)
+                        val distance = calculateDistance(itsLatitude, itsLongitude, latitude, longitude)
+                        distance
+                    }
+                    adapter.updateData(venuesList)
+                    binding.sortToggleButton.text = "거리순"
+                } else {
+                    Toast.makeText(requireContext(), "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
+    }
 
-        val defaultJson = String(buffer, Charsets.UTF_8)
-        saveJSONToFile(context, fileName, defaultJson) // 파일 저장
-        Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
-        return defaultJson
+    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val dLat = (lat2 - lat1)
+        val dLon = (lon2 - lon1)
+        return Math.sqrt(Math.pow(dLat,2.0) + Math.pow(dLon,2.0))
+    }
+
+    private fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // 권한 요청
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            // 권한이 이미 허용된 경우
+            getLastLocation()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation() // 권한 승인 후 위치 가져오기
+            } else {
+                Toast.makeText(requireContext(), "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+    }
+
+    private fun getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    // 위치 데이터 활용
+                } else {
+                    Toast.makeText(requireContext(), "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+
+    private fun initializeDefaultJSON(context: Context, fileName: String): String? {
+        val file = File(context.filesDir, fileName)
+        if (!file.exists()) {
+            try {
+                val inputStream: InputStream = context.assets.open(fileName)
+                val size = inputStream.available()
+                val buffer = ByteArray(size)
+                inputStream.read(buffer)
+                inputStream.close()
+
+                val defaultJson = String(buffer, Charsets.UTF_8)
+                saveJSONToFile(context, fileName, defaultJson) // 파일 저장
+                Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+                return defaultJson
+            } catch (e: Exception) {
+                Log.e("PlaceFragment", "기본 JSON 파일 초기화 중 오류 발생: ${e.message}")
+            }
+        }
+        return loadJSON(context, fileName) // 파일이 있으면 로드
+//        val inputStream: InputStream = context.assets.open(fileName)
+//        val size = inputStream.available()
+//        val buffer = ByteArray(size)
+//        inputStream.read(buffer)
+//        inputStream.close()
+//
+//        val defaultJson = String(buffer, Charsets.UTF_8)
+//        saveJSONToFile(context, fileName, defaultJson) // 파일 저장
+//        Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+//        return defaultJson
     }
 
     private fun loadJSON(context: Context, fileName: String): String? {

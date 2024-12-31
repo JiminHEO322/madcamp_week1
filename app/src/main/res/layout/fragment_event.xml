@@ -5,29 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.event.EventFragment">
+    tools:context=".ui.event.EventFragment"
+    android:background="@drawable/black_curtain">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="전시"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:paddingBottom="40dp"
-        tools:layout_editor_absoluteX="48dp"
-        tools:layout_editor_absoluteY="-350dp"
+        android:layout_weight="1"
         android:scrollbars="horizontal"
-        tools:listitem="@layout/item_event"
-        android:layout_weight="1"/>
+        tools:listitem="@layout/item_event" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="공연"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewBottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:paddingBottom="40dp"
-        tools:layout_editor_absoluteX="48dp"
-        tools:layout_editor_absoluteY="-350dp"
         android:scrollbars="horizontal"
         tools:listitem="@layout/item_event"
         android:layout_weight="1"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="0"/>
 </LinearLayout>

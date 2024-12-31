@@ -42,10 +42,9 @@ class MyPageAdapter(
 
     override fun getItemCount(): Int = reviews.size
 
-    fun updateData(newReviews: MutableList<JSONObject>) {
-        reviews.clear()
-        reviews.addAll(newReviews)
-        Log.d("mypageadapter", "지워줘ㅓㅓㅓㅓㅓㅓㅓㅓㅓ")
-        notifyDataSetChanged()
-    }
+//    fun updateData(newReviews: MutableList<JSONObject>) {
+//        reviews.clear()
+//        reviews.addAll(newReviews)
+//        notifyDataSetChanged()
+//    }
 }

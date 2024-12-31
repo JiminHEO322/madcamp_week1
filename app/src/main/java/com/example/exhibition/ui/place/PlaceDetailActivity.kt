@@ -57,7 +57,6 @@ class PlaceDetailActivity : AppCompatActivity() {
             val imageName = placeJsonObject.getString("image")
             val imageResId = resources.getIdentifier(imageName, "drawable", packageName)
             venue_id = placeJsonObject.getInt("venue_id")
-
             phone = placeJsonObject.getString("phone")
             url = placeJsonObject.getString("url")
             instagram = placeJsonObject.getString("instagram")

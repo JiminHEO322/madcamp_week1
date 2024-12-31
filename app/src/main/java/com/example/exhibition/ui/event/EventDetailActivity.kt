@@ -229,12 +229,15 @@ class EventDetailActivity : AppCompatActivity() {
         val defaultReviewImage = findImage(eventId)
 
         val newReview = JSONObject().apply {
-            put("review_id", eventId) // 리뷰 ID는 배열 길이에 +1
+            put("review_id", eventId)   // review_id는 event_id와 같도록 설정
             put("image", defaultReviewImage)
             put("date", "") // 현재 날짜를 가져오는 함수 호출
+            put("summary", "") // 한줄평
             put("content", "") // 리뷰 내용
         }
         reviews.put(newReview) // reviews 배열에 추가
+
+        Toast.makeText(this, "My Page에 추가되었습니다", Toast.LENGTH_SHORT).show()
     }
 
     private fun findImage(eventId: Int): String {

@@ -28,6 +28,8 @@ class ReviewDetailActivity : AppCompatActivity() {
 
     private lateinit var date_textView: TextView
     private lateinit var date_editText: EditText
+    private lateinit var summary_textView: TextView
+    private lateinit var summary_editText: EditText
     private lateinit var content_textView: TextView
     private lateinit var content_editText: EditText
 
@@ -66,14 +68,18 @@ class ReviewDetailActivity : AppCompatActivity() {
             // 뷰 초기화
             date_textView = findViewById(R.id.detailReviewDate)
             date_editText = findViewById(R.id.editDate)
+            summary_textView = findViewById(R.id.detailReviewSummary)
+            summary_editText = findViewById(R.id.editSummary)
             content_textView = findViewById(R.id.detailReviewContent)
             content_editText = findViewById(R.id.editContent)
 
             date_editText.visibility = android.view.View.GONE
+            summary_editText.visibility = android.view.View.GONE
             content_editText.visibility = android.view.View.GONE
 
-            date_textView.text = review.getString("date")
-            content_textView.text = review.getString("content")
+            date_textView.text = review.optString("date", "")
+            summary_textView.text = review.optString("summary", "")
+            content_textView.text = review.optString("content", "")
         }
     }
 
@@ -169,12 +175,19 @@ class ReviewDetailActivity : AppCompatActivity() {
             date_textView.visibility = android.view.View.GONE
             date_editText.setText(date_textView.text) // 기존 텍스트를 EditText로 설정
 
+            summary_editText.visibility = android.view.View.VISIBLE
+            summary_textView.visibility = android.view.View.GONE
+            summary_editText.setText(summary_textView.text) // 기존 텍스트를 EditText로 설정
+
             content_editText.visibility = android.view.View.VISIBLE
             content_textView.visibility = android.view.View.GONE
             content_editText.setText(content_textView.text) // 기존 텍스트를 EditText로 설정
         } else {
             date_editText.visibility = android.view.View.GONE
             date_textView.visibility = android.view.View.VISIBLE
+
+            summary_editText.visibility = android.view.View.GONE
+            summary_textView.visibility = android.view.View.VISIBLE
 
             content_editText.visibility = android.view.View.GONE
             content_textView.visibility = android.view.View.VISIBLE
@@ -184,6 +197,7 @@ class ReviewDetailActivity : AppCompatActivity() {
     private fun saveText() {
         // 수정된 텍스트를 TextView에 반영
         date_textView.text = date_editText.text.toString()
+        summary_textView.text = summary_editText.text.toString()
         content_textView.text = content_editText.text.toString()
 
         // 수정된 텍스트를 JSON 파일에 반영
@@ -191,9 +205,11 @@ class ReviewDetailActivity : AppCompatActivity() {
             val review = reviews.getJSONObject(i)
             if (review.getInt("review_id") == reviewId) {
                 val date = date_editText.text.toString()
+                val summary = summary_editText.text.toString()
                 val content = content_editText.text.toString()
 
                 review.put("date", date)
+                review.put("summary", summary)
                 review.put("content", content)
 
                 saveUpdatedJSON()

@@ -42,9 +42,6 @@ class MyPageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMypageBinding.inflate(inflater, container, false)
-//        val root: View = binding.root
-//        val view = inflater.inflate(R.layout.fragment_mypage, container, false)
-//        val recyclerView: RecyclerView = view.findViewById(R.id.review_recyclerView)
 
         // json 데이터 불러오기
         val jsonString = initializeDefaultJSON(requireContext())
@@ -67,7 +64,6 @@ class MyPageFragment : Fragment() {
             binding.reviewRecyclerView.layoutManager = GridLayoutManager(context, 3)
             binding.reviewRecyclerView.adapter = adapter
 
-            Log.d("MyPageFragment", "notify!!!!!!!!!!!!11")
             adapter.notifyDataSetChanged()
         } else{
             Toast.makeText(requireContext(), "리뷰가 없습니다.", Toast.LENGTH_SHORT).show()
@@ -112,10 +108,10 @@ class MyPageFragment : Fragment() {
 
                 val defaultJson = String(buffer, Charsets.UTF_8)
                 saveJSONToFile(context, defaultJson) // 파일 저장
-                Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+                Log.d("MyPageFragment", "기본 JSON 파일 생성 완료")
                 return defaultJson
             } catch (e: Exception) {
-                Log.e("PlaceFragment", "기본 JSON 파일 초기화 중 오류 발생: ${e.message}")
+                Log.e("MyPageFragment", "기본 JSON 파일 초기화 중 오류 발생: ${e.message}")
             }
         }
         return loadJSON(context) // 파일이 있으면 로드
@@ -126,14 +122,14 @@ class MyPageFragment : Fragment() {
             val file = File(context.filesDir, fileName)
             if (file.exists()) {
                 val jsonData = file.readText()
-                Log.d("PlaceFragment", "로드된 JSON 데이터: $jsonData") // 확인용 로그
+                Log.d("MyPageFragment", "로드된 JSON 데이터: $jsonData") // 확인용 로그
                 jsonData
             } else {
-                Log.w("PlaceFragment", "JSON 파일이 존재하지 않습니다.")
+                Log.w("MyPageFragment", "JSON 파일이 존재하지 않습니다.")
                 null
             }
         } catch (e: Exception) {
-            Log.e("PlaceFragment", "JSON 로드 중 오류 발생: ${e.message}")
+            Log.e("MyPageFragment", "JSON 로드 중 오류 발생: ${e.message}")
             null
         }
     }
@@ -142,9 +138,9 @@ class MyPageFragment : Fragment() {
         try {
             val file = File(context.filesDir, fileName)
             file.writeText(jsonString)
-            Log.d("EventFragment", "JSON 파일 저장 완료: ${file.absolutePath}")
+            Log.d("MyPageFragment", "JSON 파일 저장 완료: ${file.absolutePath}")
         } catch (e: Exception) {
-            Log.e("EventFragment", "JSON 파일 저장 중 오류 발생: ${e.message}")
+            Log.e("MyPageFragment", "JSON 파일 저장 중 오류 발생: ${e.message}")
         }
     }
 }
