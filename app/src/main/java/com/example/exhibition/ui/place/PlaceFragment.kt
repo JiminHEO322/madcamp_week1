@@ -192,6 +192,7 @@ class PlaceFragment : Fragment() {
                 if (location != null) {
                     val latitude = location.latitude
                     val longitude = location.longitude
+                    Toast.makeText(requireContext(), "현재 위치: $latitude, $longitude", Toast.LENGTH_SHORT).show()
                     venuesList.sortBy {
                         val itsLatitude = it.optDouble("latitude", 0.0)
                         val itsLongitude = it.optDouble("longitude", 0.0)
@@ -272,7 +273,9 @@ class PlaceFragment : Fragment() {
             }
     }
 
+
     private fun initializeDefaultJSON(context: Context, fileName: String): String? {
+        /*
         val file = File(context.filesDir, fileName)
         if (!file.exists()) {
             try {
@@ -291,16 +294,18 @@ class PlaceFragment : Fragment() {
             }
         }
         return loadJSON(context, fileName) // 파일이 있으면 로드
-//        val inputStream: InputStream = context.assets.open(fileName)
-//        val size = inputStream.available()
-//        val buffer = ByteArray(size)
-//        inputStream.read(buffer)
-//        inputStream.close()
-//
-//        val defaultJson = String(buffer, Charsets.UTF_8)
-//        saveJSONToFile(context, fileName, defaultJson) // 파일 저장
-//        Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
-//        return defaultJson
+         */
+
+        val inputStream: InputStream = context.assets.open(fileName)
+        val size = inputStream.available()
+        val buffer = ByteArray(size)
+        inputStream.read(buffer)
+        inputStream.close()
+
+        val defaultJson = String(buffer, Charsets.UTF_8)
+        saveJSONToFile(context, fileName, defaultJson) // 파일 저장
+        Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
+        return defaultJson
     }
 
     private fun loadJSON(context: Context, fileName: String): String? {
