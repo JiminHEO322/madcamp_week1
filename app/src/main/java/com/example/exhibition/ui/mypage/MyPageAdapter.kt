@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exhibition.R
-import com.example.exhibition.model.Review
-import org.json.JSONArray
 import org.json.JSONObject
 
 class MyPageAdapter(
@@ -42,9 +40,4 @@ class MyPageAdapter(
 
     override fun getItemCount(): Int = reviews.size
 
-//    fun updateData(newReviews: MutableList<JSONObject>) {
-//        reviews.clear()
-//        reviews.addAll(newReviews)
-//        notifyDataSetChanged()
-//    }
 }
