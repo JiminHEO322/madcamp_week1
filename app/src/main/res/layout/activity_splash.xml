@@ -10,9 +10,9 @@
     <ImageView
         android:id="@+id/pictureCutImage"
         android:layout_width="wrap_content"
-        android:layout_height="280dp"
+        android:layout_height="260dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="160dp"
         android:src="@drawable/photo1_cut" />
 
     <RelativeLayout
@@ -28,9 +28,9 @@
         <ImageView
             android:id="@+id/pictureImage"
             android:layout_width="wrap_content"
-            android:layout_height="280dp"
+            android:layout_height="260dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="20dp"
             android:src="@drawable/photo1" />
 
         <!-- 액자 이미지 -->
