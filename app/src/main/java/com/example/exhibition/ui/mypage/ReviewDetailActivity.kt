@@ -23,10 +23,12 @@ import android.icu.util.Calendar
 import android.net.Uri
 import android.util.Base64
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.exifinterface.media.ExifInterface
@@ -147,6 +149,42 @@ class ReviewDetailActivity : AppCompatActivity() {
     }
 
     private fun changeImage() {
+//        val dialog = AlertDialog.Builder(this)
+//        val view = changeImageButton
+//        dialog.setContentView(view)
+//
+//        // 팝업 내 버튼 이벤트
+//        val posterButton = view.findViewById<TextView>(R.id.btn_poster)
+//        val addPhotoButton = view.findViewById<TextView>(R.id.btn_add_photo)
+//
+//        posterButton.setOnClickListener {
+//            // 포스터 클릭 로직
+//            for (i in 0 until events.length()){
+//                    val event = events.getJSONObject(i)
+//                    if (event.getInt("event_id") == reviewId){
+//                        for (j in 0 until reviews.length()){
+//                            val review = reviews.getJSONObject(j)
+//                            if (review.getInt("review_id") == reviewId){
+//                                review.put("image", event.getString("image"))
+//
+//                                saveUpdatedJSON()
+//                                break
+//                            }
+//                        }
+//                    }
+//            }
+//            loadImageFromJSON()
+//        }
+//
+//        addPhotoButton.setOnClickListener {
+//            // 사진 추가 클릭 로직
+//            try{
+//                openGallery()
+//            } catch(e: Exception){
+//                Log.e("ReviewDetailActivity", "이미지 수정 중 오류 발생: ${e.message}")
+//                Toast.makeText(this, "수정 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+//            }
+//        }
         AlertDialog.Builder(this)
             .setTitle("이미지 변경")
             .setMessage("변경할 이미지")
