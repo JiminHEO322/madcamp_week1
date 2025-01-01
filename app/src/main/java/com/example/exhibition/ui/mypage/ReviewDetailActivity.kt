@@ -150,55 +150,20 @@ class ReviewDetailActivity : AppCompatActivity() {
     }
 
     private fun changeImage() {
-//        val dialog = AlertDialog.Builder(this)
-//        val view = changeImageButton
-//        dialog.setContentView(view)
-//
-//        // 팝업 내 버튼 이벤트
-//        val posterButton = view.findViewById<TextView>(R.id.btn_poster)
-//        val addPhotoButton = view.findViewById<TextView>(R.id.btn_add_photo)
-//
-//        posterButton.setOnClickListener {
-//            // 포스터 클릭 로직
-//            for (i in 0 until events.length()){
-//                    val event = events.getJSONObject(i)
-//                    if (event.getInt("event_id") == reviewId){
-//                        for (j in 0 until reviews.length()){
-//                            val review = reviews.getJSONObject(j)
-//                            if (review.getInt("review_id") == reviewId){
-//                                review.put("image", event.getString("image"))
-//
-//                                saveUpdatedJSON()
-//                                break
-//                            }
-//                        }
-//                    }
-//            }
-//            loadImageFromJSON()
-//        }
-//
-//        addPhotoButton.setOnClickListener {
-//            // 사진 추가 클릭 로직
-//            try{
-//                openGallery()
-//            } catch(e: Exception){
-//                Log.e("ReviewDetailActivity", "이미지 수정 중 오류 발생: ${e.message}")
-//                Toast.makeText(this, "수정 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-        AlertDialog.Builder(this)
-            .setTitle("이미지 변경")
-            .setMessage("변경할 이미지")
-            .setPositiveButton("갤러리") { _, _ ->
-                try {
-                    openGallery()
-                } catch (e: Exception) {
-                    Log.e("ReviewDetailActivity", "이미지 수정 중 오류 발생: ${e.message}")
-                    Toast.makeText(this, "수정 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .setNegativeButton("포스터") { _, _ ->
-                for (i in 0 until events.length()){
+        val inflater = LayoutInflater.from(this)
+        val view = inflater.inflate(R.layout.popup_image_change, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(view)
+            .create()
+
+        // 팝업 내 버튼 이벤트
+        val posterButton = view.findViewById<TextView>(R.id.btn_poster)
+        val addPhotoButton = view.findViewById<TextView>(R.id.btn_add_photo)
+
+        posterButton.setOnClickListener {
+            // 포스터 클릭 로직
+            dialog.dismiss()
+            for (i in 0 until events.length()){
                     val event = events.getJSONObject(i)
                     if (event.getInt("event_id") == reviewId){
                         for (j in 0 until reviews.length()){
@@ -211,10 +176,51 @@ class ReviewDetailActivity : AppCompatActivity() {
                             }
                         }
                     }
-                }
-                loadImageFromJSON()
             }
-            .show()
+            loadImageFromJSON()
+        }
+
+        addPhotoButton.setOnClickListener {
+            // 사진 추가 클릭 로직
+            dialog.dismiss()
+            try{
+                openGallery()
+            } catch(e: Exception){
+                Log.e("ReviewDetailActivity", "이미지 수정 중 오류 발생: ${e.message}")
+                Toast.makeText(this, "수정 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.show()
+//        AlertDialog.Builder(this)
+//            .setTitle("이미지 변경")
+//            .setMessage("변경할 이미지")
+//            .setPositiveButton("갤러리") { _, _ ->
+//                try {
+//                    openGallery()
+//                } catch (e: Exception) {
+//                    Log.e("ReviewDetailActivity", "이미지 수정 중 오류 발생: ${e.message}")
+//                    Toast.makeText(this, "수정 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            .setNegativeButton("포스터") { _, _ ->
+//                for (i in 0 until events.length()){
+//                    val event = events.getJSONObject(i)
+//                    if (event.getInt("event_id") == reviewId){
+//                        for (j in 0 until reviews.length()){
+//                            val review = reviews.getJSONObject(j)
+//                            if (review.getInt("review_id") == reviewId){
+//                                review.put("image", event.getString("image"))
+//
+//                                saveUpdatedJSON()
+//                                break
+//                            }
+//                        }
+//                    }
+//                }
+//                loadImageFromJSON()
+//            }
+//            .show()
     }
 
     private fun showDatePickerDialog() {
