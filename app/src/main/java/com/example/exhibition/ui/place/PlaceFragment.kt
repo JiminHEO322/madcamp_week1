@@ -289,7 +289,7 @@ class PlaceFragment : Fragment() {
 
 
     private fun initializeDefaultJSON(context: Context, fileName: String): String? {
-/*
+
         // 두번째부터 이거로
         val file = File(context.filesDir, fileName)
         if (!file.exists()) {
@@ -310,9 +310,7 @@ class PlaceFragment : Fragment() {
         }
         return loadJSON(context, fileName) // 파일이 있으면 로드
 
-
-
- */
+/*
         // json파일 변경하고 처음 실행할때
         val inputStream: InputStream = context.assets.open(fileName)
         val size = inputStream.available()
@@ -324,6 +322,8 @@ class PlaceFragment : Fragment() {
         saveJSONToFile(context, fileName, defaultJson) // 파일 저장
         Log.d("PlaceFragment", "기본 JSON 파일 생성 완료")
         return defaultJson
+
+ */
 
     }
 

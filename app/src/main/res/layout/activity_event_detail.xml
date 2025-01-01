@@ -101,17 +101,18 @@
                         android:textSize="16sp" />
                 </TableRow>
             </TableLayout>
+
             <Button
-            android:id="@+id/openUrlButton"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="#3F194C"
-            android:padding="8dp"
-            android:text="예매하기"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:layout_marginLeft="0dp"/>
+                android:id="@+id/openUrlButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="140dp"
+                android:background="#ffffff"
+                android:padding="8dp"
+                android:text="예매하기"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
         </LinearLayout>
 
 

@@ -88,16 +88,14 @@ class PlaceDetailActivity : AppCompatActivity() {
             val onEvents = onEventsArray.toMutableList()
 
             // RecyclerView와 Adapter 설정
-            eventAdapter = EventAdapter(this, venues, onEvents) { selectedEvent ->
-                // 클릭 이벤트 처리
+            eventAdapter = EventAdapter(this, venues, onEvents, { selectedEvent ->
                 val selectedVenue = getVenueLocation(venues, selectedEvent.getInt("venue_id"))
-                val eventId = selectedEvent.getInt("event_id")
                 val intent = Intent(this, EventDetailActivity::class.java).apply {
-                    putExtra("event_id", eventId)
+                    putExtra("event_data", selectedEvent.toString())
                     putExtra("event_location", selectedVenue)
                 }
                 startActivity(intent)
-            }
+            }, isFullWidth = true) // match_parent로 설정
 
             eventRecyclerView.layoutManager = GridLayoutManager(this, 2)
             eventRecyclerView.adapter = eventAdapter
