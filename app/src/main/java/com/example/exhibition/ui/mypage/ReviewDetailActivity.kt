@@ -3,6 +3,7 @@ package com.example.exhibition.ui.mypage
 import android.Manifest
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.ContentResolver
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -17,6 +18,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.icu.util.Calendar
 import android.net.Uri
 import android.util.Base64
@@ -27,6 +29,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.exifinterface.media.ExifInterface
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
@@ -131,13 +134,48 @@ class ReviewDetailActivity : AppCompatActivity() {
             // 이미지 수정
             changeImageButton.setOnClickListener{
                 checkPermission()
-                openGallery()
+                changeImage()
+                Log.d("ReviewDetailActivity", "이미지 변경완료 $reviews")
+//
+//                loadImageFromJSON()
             }
 
             date_editText.setOnClickListener{
                 showDatePickerDialog()
             }
         }
+    }
+
+    private fun changeImage() {
+        AlertDialog.Builder(this)
+            .setTitle("이미지 변경")
+            .setMessage("변경할 이미지")
+            .setPositiveButton("갤러리") { _, _ ->
+                try {
+                    openGallery()
+                } catch (e: Exception) {
+                    Log.e("ReviewDetailActivity", "이미지 수정 중 오류 발생: ${e.message}")
+                    Toast.makeText(this, "수정 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("포스터") { _, _ ->
+                for (i in 0 until events.length()){
+                    val event = events.getJSONObject(i)
+                    if (event.getInt("event_id") == reviewId){
+                        for (j in 0 until reviews.length()){
+                            val review = reviews.getJSONObject(j)
+                            if (review.getInt("review_id") == reviewId){
+                                review.put("image", event.getString("image"))
+
+                                saveUpdatedJSON()
+                                break
+                            }
+                        }
+                    }
+                }
+                loadImageFromJSON()
+            }
+            .show()
     }
 
     private fun showDatePickerDialog() {
@@ -446,13 +484,66 @@ class ReviewDetailActivity : AppCompatActivity() {
 
     private fun getBitmapFromUri(uri: Uri): Bitmap? {
         return try {
-            contentResolver.openInputStream(uri)?.use {
-                BitmapFactory.decodeStream(it)
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                val originalBitmap = BitmapFactory.decodeStream(inputStream) ?: return@use null
             }
+            // !! BUT !! 여기서 exifInterface를 재사용하려면, inputStream을 다시 열거나
+            // rotateBitmapIfRequired() 함수 내부에서 열어야 합니다.
+
+            // 1) decodeStream으로 Bitmap 생성
+            val originalBitmap = contentResolver.openInputStream(uri)?.use {
+                BitmapFactory.decodeStream(it)
+            } ?: return null
+
+            // 2) EXIF 정보 읽어 회전 보정
+            val correctedBitmap = rotateBitmapIfRequired(originalBitmap, uri, contentResolver)
+
+            correctedBitmap
         } catch (e: Exception) {
             Log.e("ReviewDetailActivity", "Bitmap 변환 중 오류 발생: ${e.message}")
             null
         }
+    }
+
+    private fun rotateBitmapIfRequired(originalBitmap: Bitmap, uri: Uri, contentResolver: ContentResolver?): Bitmap? {
+        // 1. EXIF 정보 가져오기
+        val inputStream = contentResolver?.openInputStream(uri) ?: return originalBitmap
+        val exif = ExifInterface(inputStream)
+        inputStream.close()
+
+        // 2. orientation 값 확인
+        val orientation = exif.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_NORMAL
+        )
+
+        // 3. 회전 각도 결정
+        val rotationDegrees = when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            else -> 0
+        }
+
+        // 4. 회전할 필요가 없으면 원본 그대로 반환
+        if (rotationDegrees == 0) {
+            return originalBitmap
+        }
+
+        // 5. 회전 매트릭스 적용
+        val matrix = Matrix()
+        matrix.postRotate(rotationDegrees.toFloat())
+
+        // 6. 회전된 비트맵 생성
+        return Bitmap.createBitmap(
+            originalBitmap,
+            0,
+            0,
+            originalBitmap.width,
+            originalBitmap.height,
+            matrix,
+            true
+        )
     }
 
     private fun loadImageFromJSON() {

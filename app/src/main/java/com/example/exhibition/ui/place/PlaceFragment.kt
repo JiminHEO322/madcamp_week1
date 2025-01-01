@@ -150,7 +150,7 @@ class PlaceFragment : Fragment() {
         Log.d("PlaceFragment", "RESUME")
 
         // JSON 파일에서 데이터를 다시 로드
-        val updatedJsonString = initializeDefaultJSON(requireContext())
+        val updatedJsonString = loadJSON(requireContext())
         if (updatedJsonString != null) {
             val updatedJsonObject = JSONObject(updatedJsonString)
             venuesList.clear()

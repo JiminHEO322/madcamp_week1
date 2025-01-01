@@ -20,20 +20,23 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginLeft="20dp">
+            android:layout_marginLeft="30dp">
 
             <ImageView
                 android:id="@+id/userProfile"
-                android:layout_width="120dp"
+                android:layout_width="100dp"
                 android:layout_height="120dp"
-                android:padding="10dp"
-                android:scaleType="fitStart"
-                android:src="@drawable/profile" />
+
+                android:paddingTop="20dp"
+                android:paddingBottom="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_userprofile" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:layout_marginTop="6sp"
                 android:text="USERNAME"
                 android:textColor="#ffffff"
                 android:textSize="16sp"
@@ -45,7 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="10sp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -55,7 +59,8 @@
                 android:text="관람한 전시"
                 android:textColor="#ffffff"
                 android:textSize="18sp"
-                android:layout_marginTop="50dp"/>
+                android:layout_marginTop="50sp"
+                android:layout_marginBottom="5sp"/>
 
             <TextView
                 android:id="@+id/exhibitionNumber_text"
@@ -65,24 +70,27 @@
                 android:gravity="center"
                 android:text="13"
                 android:textColor="#ffffff"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:layout_marginTop="5sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginRight="10sp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="50dp"
                 android:gravity="center"
                 android:text="관람한 공연"
                 android:textColor="#ffffff"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_marginTop="50sp"
+                android:layout_marginBottom="5sp"/>
 
             <TextView
                 android:id="@+id/performanceNumber_text"
@@ -90,9 +98,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="12"
+                android:text="13"
                 android:textColor="#ffffff"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:layout_marginTop="5sp" />
         </LinearLayout>
 
     </LinearLayout>
