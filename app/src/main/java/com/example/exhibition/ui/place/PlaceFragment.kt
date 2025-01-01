@@ -88,6 +88,7 @@ class PlaceFragment : Fragment() {
             venues = jsonObject.getJSONArray("venues") ?: JSONArray()
             venuesList = venues.toMutableList()
             venuesList.sortBy { it.getString("name")}
+            Log.d("PlaceFragment", "venues: ${venuesList.toString()}")
 
 
 
@@ -149,11 +150,13 @@ class PlaceFragment : Fragment() {
         Log.d("PlaceFragment", "RESUME")
 
         // JSON 파일에서 데이터를 다시 로드
-        val updatedJsonString = loadJSON(requireContext())
+        val updatedJsonString = initializeDefaultJSON(requireContext())
         if (updatedJsonString != null) {
             val updatedJsonObject = JSONObject(updatedJsonString)
             venuesList.clear()
             venuesList.addAll(updatedJsonObject.getJSONArray("venues").toMutableList())
+            venuesList.sortBy { it.getString("name")}
+            Log.d("PlaceFragment", "venues: ${venuesList.toString()}")
 
             // 어댑터에 데이터 갱신 알림
             adapter.notifyDataSetChanged()
