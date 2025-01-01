@@ -304,7 +304,7 @@ class ReviewDetailActivity : AppCompatActivity() {
                             reviews.remove(i) // 리뷰 삭제
 
                             for (j in 0 until events.length()){
-                                val event = events.getJSONObject(i)
+                                val event = events.getJSONObject(j)
                                 if (event.getInt("event_id") == reviewId) {
                                     event.put("viewed", false)
                                     break

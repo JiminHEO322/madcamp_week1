@@ -11,6 +11,7 @@ import com.example.exhibition.R
 import org.json.JSONArray
 import org.json.JSONObject
 import android.content.Context
+import android.util.Log
 import com.example.exhibition.toMutableList
 
 
@@ -64,6 +65,7 @@ class PlaceAdapter(private val context: Context,
     override fun getItemCount(): Int = filteredList.size
 
     fun filter(query: String) {
+        Log.d("PlaceAdapter", "filter 시작")
         val sanitizedQuery = query.replace(" ", "")
         filteredList = if (sanitizedQuery.isEmpty()) {
             placeList.toMutableList()
@@ -72,6 +74,7 @@ class PlaceAdapter(private val context: Context,
                 val sanitizedTitle = it.getString("name").replace(" ", "")
                 sanitizedTitle.contains(sanitizedQuery, ignoreCase = true) }.toMutableList()
         }
+
         notifyDataSetChanged()
     }
 
