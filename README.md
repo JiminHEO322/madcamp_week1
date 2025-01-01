@@ -1,5 +1,3 @@
-# Untitled
-
 ## 🏛️ YESUL : 문화 생활을 즐기고 싶으신가요?
 
 ![BananaCatCryingGIF.gif](BananaCatCryingGIF.gif)
