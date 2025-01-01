@@ -54,54 +54,140 @@
             </ImageView>
             <TextView
                 android:id="@+id/detailAddressTextView"
-                android:layout_width="375dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:paddingTop="8dp"
+                android:paddingLeft="4sp"
+                android:text="대전광역시"
                 android:textColor="@color/white"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:padding="16dp"
             android:layout_marginTop="0dp">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:onClick="onPhoneClick" >
 
-            <ImageView
-                android:id="@+id/phoneImage"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:src="@drawable/phone_white"
-                android:scaleType="centerCrop"
-                android:onClick="onPhoneClick" />
+                <ImageView
+                    android:id="@+id/phoneImage"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/phone_white"
+                    android:scaleType="centerCrop"
+                    android:layout_gravity="center"
+                    />
 
-            <ImageView
-                android:id="@+id/homeImage"
-                android:layout_width="48dp"
-                android:layout_height="40dp"
-                android:paddingStart="8dp"
-                android:src="@drawable/home"
-                android:scaleType="centerCrop"
-                android:onClick="onHomeClick"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phone"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/instagramImage"
-                android:layout_width="52dp"
-                android:layout_height="40dp"
-                android:paddingStart="12dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/instagram"
-                android:onClick="onInstgramClick"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/lightgray" />
 
-            <ImageView
-                android:id="@+id/youtubeImage"
-                android:layout_width="52dp"
-                android:layout_height="40dp"
-                android:paddingStart="12dp"
-                android:src="@drawable/youtube"
-                android:scaleType="centerCrop"
-                android:onClick="onYoutubeClick"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:onClick="onHomeClick">
+                <ImageView
+                    android:id="@+id/homeImage"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/home"
+                    android:scaleType="centerCrop"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="URL"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/lightgray" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+
+                android:onClick="onInstgramClick" >
+
+                <ImageView
+                    android:id="@+id/instagramImage"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/instagram"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Instagram"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/lightgray" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:onClick="onPhoneClick" >
+                <ImageView
+                    android:id="@+id/youtubeImage"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/youtube"
+                    android:scaleType="centerCrop"
+                    android:onClick="onYoutubeClick"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Youtube"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center" />
+            </LinearLayout>
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
@@ -109,7 +195,7 @@
             android:text="진행 중인 공연"
             android:textSize="20sp"
             android:textColor="@android:color/white"
-            android:layout_marginTop="6dp"/>
+            android:layout_marginTop="8dp"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/eventRecyclerView"
             android:layout_width="match_parent"
