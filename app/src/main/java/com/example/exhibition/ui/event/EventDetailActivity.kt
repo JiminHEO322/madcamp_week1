@@ -49,8 +49,6 @@ class EventDetailActivity : AppCompatActivity() {
         super.onResume()
         Log.d("EventDetailActivty", "RESUME")
 
-        setContentView(R.layout.activity_event_detail)
-
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             title = "상세 정보"

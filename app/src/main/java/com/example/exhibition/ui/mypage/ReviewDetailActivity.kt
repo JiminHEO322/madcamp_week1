@@ -76,6 +76,7 @@ class ReviewDetailActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
+            title = "Review"
         }
 
         galleryLauncher = registerForActivityResult(
