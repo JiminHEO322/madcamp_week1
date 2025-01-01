@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="760sp"
+    android:layout_height="match_parent"
     android:background="#252525"
     tools:context=".ui.place.PlaceFragment">
 
@@ -12,7 +12,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_marginBottom="63dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,7 +70,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="632sp"
+            android:layout_height="match_parent"
             android:layout_weight="1" />
         <FrameLayout
             xmlns:android="http://schemas.android.com/apk/res/android"

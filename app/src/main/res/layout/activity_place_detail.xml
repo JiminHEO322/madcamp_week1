@@ -171,14 +171,13 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:onClick="onPhoneClick" >
+                android:onClick="onYoutubeClick" >
                 <ImageView
                     android:id="@+id/youtubeImage"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/youtube"
-                    android:scaleType="centerCrop"
-                    android:onClick="onYoutubeClick"/>
+                    android:scaleType="centerCrop"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
