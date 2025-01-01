@@ -23,13 +23,13 @@ class SplashActivity : AppCompatActivity() {
         val pictureCutImage = findViewById<ImageView>(R.id.pictureCutImage)
 
         // 그림 이미지가 아래로 내려가는 애니메이션
-        val animator = ObjectAnimator.ofFloat(pictureImage, "translationY", 400f)
-        animator.duration = 2000 // 애니메이션 지속 시간 (2초)
+        val animator = ObjectAnimator.ofFloat(pictureImage, "translationY", 380f)
+        animator.duration = 1200 // 애니메이션 지속 시간 (2초)
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.start()
 
-        val animatorCut = ObjectAnimator.ofFloat(pictureCutImage, "translationY", 400f)
-        animatorCut.duration = 2000 // 애니메이션 지속 시간 (2초)
+        val animatorCut = ObjectAnimator.ofFloat(pictureCutImage, "translationY", 380f)
+        animatorCut.duration = 1200 // 애니메이션 지속 시간 (2초)
         animatorCut.interpolator = AccelerateDecelerateInterpolator()
         animatorCut.start()
 

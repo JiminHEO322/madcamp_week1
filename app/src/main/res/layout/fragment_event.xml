@@ -13,7 +13,9 @@
         android:layout_height="wrap_content"
         android:text="전시"
         android:textColor="@color/white"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTop"
@@ -21,14 +23,17 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:scrollbars="horizontal"
-        tools:listitem="@layout/item_event" />
+        tools:listitem="@layout/item_event"
+        android:layout_gravity="center" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="공연"
         android:textColor="@color/white"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewBottom"
@@ -36,7 +41,7 @@
         android:layout_height="match_parent"
         android:scrollbars="horizontal"
         tools:listitem="@layout/item_event"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <View
         android:layout_width="match_parent"

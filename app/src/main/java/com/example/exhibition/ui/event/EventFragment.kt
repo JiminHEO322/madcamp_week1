@@ -17,6 +17,8 @@ import com.example.exhibition.getVenueLocation
 import org.json.JSONArray
 import java.io.File
 import java.io.InputStream
+import androidx.recyclerview.widget.LinearSnapHelper
+import com.example.exhibition.EqualSpacingItemDecoration
 
 
 class EventFragment : Fragment() {
@@ -62,32 +64,38 @@ class EventFragment : Fragment() {
                 }
             }
 
-            val topAdapter = EventAdapter(requireContext(), venues, topEvents) { selectedEvent ->
+            val topAdapter = EventAdapter(requireContext(), venues, topEvents, { selectedEvent ->
                 val selectedVenue = getVenueLocation(venues, selectedEvent.getInt("venue_id"))
                 val intent = Intent(requireContext(), EventDetailActivity::class.java).apply {
                     putExtra("event_id", selectedEvent.getInt("event_id"))
                     putExtra("event_location", selectedVenue)
                 }
                 startActivity(intent)
-            }
+            }, isFullWidth = false) // match_parent가 아닌 기본 크기 (300dp)
 
-            val bottomAdapter = EventAdapter(requireContext(), venues, bottomEvents) { selectedEvent ->
+            val bottomAdapter = EventAdapter(requireContext(), venues, bottomEvents, { selectedEvent ->
                 val selectedVenue = getVenueLocation(venues, selectedEvent.getInt("venue_id"))
                 val intent = Intent(requireContext(), EventDetailActivity::class.java).apply {
                     putExtra("event_id", selectedEvent.getInt("event_id"))
                     putExtra("event_location", selectedVenue)
                 }
                 startActivity(intent)
-            }
+            }, isFullWidth = false) // match_parent가 아닌 기본 크기 (300dp)
 
             // RecyclerView 설정
-            binding.recyclerViewTop.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            binding.recyclerViewTop.adapter = topAdapter
+            binding.recyclerViewTop.apply {
+                layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                adapter = topAdapter
 
-            binding.recyclerViewBottom.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            binding.recyclerViewBottom.adapter = bottomAdapter
+                addItemDecoration(EqualSpacingItemDecoration(125, 16))
+            }
+
+            binding.recyclerViewBottom.apply {
+                layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                adapter = bottomAdapter
+
+                addItemDecoration(EqualSpacingItemDecoration(125, 16))
+            }
         } else {
             Toast.makeText(requireContext(), "공연 데이터를 로드할 수 없습니다.", Toast.LENGTH_SHORT).show()
         }

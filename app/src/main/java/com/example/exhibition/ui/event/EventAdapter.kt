@@ -17,7 +17,8 @@ class EventAdapter(
     private val context: Context,
     private val venues: JSONArray,
     private val events: MutableList<JSONObject>,
-    private val onItemClick: (JSONObject) -> Unit
+    private val onItemClick: (JSONObject) -> Unit,
+    private val isFullWidth: Boolean
     ) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -30,6 +31,13 @@ class EventAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.item_event, parent, false)
+
+        if (isFullWidth) {
+            val layoutParams = view.layoutParams
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT // match_parent 설정
+            view.layoutParams = layoutParams
+        }
+
         return EventViewHolder(view)
     }
 

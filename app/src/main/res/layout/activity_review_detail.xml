@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="#363636">
+        android:background="#252525">
 
         <ImageView
             android:id="@+id/detailReviewImage"
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:hint="관람한 날짜 선택"
+                    android:hint=" 관람한 날짜 선택"
                     android:textColorHint="@color/lightgray"
                     android:textSize="18sp"
                     android:textColor="@color/white"
