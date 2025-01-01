@@ -51,9 +51,9 @@ class MainActivity : AppCompatActivity() {
                         navView.itemTextColor = ColorStateList.valueOf(Color.WHITE) // 텍스트 흰색
                     }
                     else -> {
-                        navView.setBackgroundColor(getColor(R.color.white)) // 기본 색상
-                        navView.itemIconTintList = ColorStateList.valueOf(Color.BLACK)
-                        navView.itemTextColor = ColorStateList.valueOf(Color.BLACK)// 기본 텍스트 색상
+                        navView.setBackgroundColor(getColor(R.color.background_color)) // 기본 색상
+                        navView.itemIconTintList = ColorStateList.valueOf(Color.WHITE)
+                        navView.itemTextColor = ColorStateList.valueOf(Color.WHITE)// 기본 텍스트 색상
                     }
                 }
             }
