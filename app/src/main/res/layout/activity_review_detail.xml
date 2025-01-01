@@ -1,110 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#363636"
+    android:fillViewport="true"
     tools:context=".ui.mypage.ReviewDetailActivity">
 
-    <ImageView
-        android:id="@+id/detailReviewImage"
-        android:layout_width="159dp"
-        android:layout_height="211dp"
-        android:scaleType="centerCrop"
-        android:layout_gravity="center"
-        android:contentDescription="@string/image" />
-
-    <TextView
-        android:id="@+id/detailReviewTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:paddingLeft="8dp"
-        android:text="Title"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"/>
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#363636">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginVertical="15dp"
-        android:background="@color/lightgray" />
+        <ImageView
+            android:id="@+id/detailReviewImage"
+            android:layout_width="159dp"
+            android:layout_height="211dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/image" />
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TableRow>
+        <ImageView
+            android:id="@+id/changeImageButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginVertical="10dp"
+            android:src="@drawable/ic_change_image"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/detailReviewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="15dp"
+            android:paddingLeft="8dp"
+            android:text="Title"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/dateText"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:paddingRight="8dp"
+                android:layout_gravity="center"
                 android:text="관람 일자"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:id="@+id/detailReviewDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:textSize="18sp"
-                android:textColor="@color/white"/>
-
-            <EditText
-                android:id="@+id/editDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:hint="관람한 날짜 입력"
-                android:textColorHint="@color/lightgray"
-                android:textSize="18sp"
                 android:textColor="@color/white"
-                android:backgroundTint="@color/lightgray"
-                android:visibility="gone"/>
-        </TableRow>
+                />
 
-        <TableRow>
-            <TextView
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/detailReviewDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:id="@+id/editDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:hint="관람한 날짜 선택"
+                    android:textColorHint="@color/lightgray"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/edittext_box"
+                    android:visibility="gone"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="20dp"
+                android:layout_gravity="center"
                 android:text="한 줄 평"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"/>
 
+
             <TextView
                 android:id="@+id/detailReviewSummary"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:textSize="18sp"
-                android:textColor="@color/white"/>
+                android:layout_weight="1"
+                android:paddingLeft="16dp"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/editSummary"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:layout_weight="1"
+                android:paddingLeft="16dp"
                 android:hint="한줄평 입력"
                 android:textColorHint="@color/lightgray"
                 android:textSize="18sp"
                 android:textColor="@color/white"
-                android:backgroundTint="@color/lightgray"
+                android:background="@drawable/edittext_box"
+                android:visibility="gone"
+                android:ellipsize="end"
                 android:lineSpacingMultiplier="1.2"
-                android:visibility="gone"/>
-        </TableRow>
+                android:inputType="textMultiLine" />
+        </LinearLayout>
+
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginVertical="15dp"
-            android:background="@color/lightgray" />
+            android:background="@color/darkgray" />
 
         <TextView
             android:id="@+id/detailReviewContent"
@@ -124,9 +160,11 @@
             android:textColorHint="@color/lightgray"
             android:textSize="18sp"
             android:textColor="@color/white"
-            android:backgroundTint="@color/lightgray"
+            android:background="@drawable/edittext_box"
             android:lineSpacingMultiplier="1.2"
-            android:visibility="gone"/>
-    </TableLayout>
+            android:visibility="gone"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical" />
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

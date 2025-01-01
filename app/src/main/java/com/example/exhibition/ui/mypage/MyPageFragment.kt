@@ -34,6 +34,7 @@ class MyPageFragment : Fragment() {
     private lateinit var adapter: MyPageAdapter
 
     private val fileName: String = "exhibition_data.json"
+    private var events = mutableListOf<JSONObject>()
     private var reviews = mutableListOf<JSONObject>()
 
     override fun onCreateView(
@@ -48,8 +49,17 @@ class MyPageFragment : Fragment() {
 
         if (jsonString != null) {
             val jsonObject = JSONObject(jsonString)
+            events = jsonObject.getJSONArray("events").toMutableList()
             reviews = jsonObject.getJSONArray("reviews").toMutableList()
+            reviews.sortBy { it.optString("date") }
+
             Log.d("MyPageFragment", "reviews: $reviews")
+
+            val performanceNumber = getPerformanceNumber()
+            val exhibitionNumber = reviews.size - performanceNumber
+
+            binding.performanceNumberText.text = "$performanceNumber"
+            binding.exhibitionNumberText.text = "$exhibitionNumber"
 
             adapter = MyPageAdapter(requireContext(), reviews) { selectedReview ->
                 val intent = Intent(requireContext(), ReviewDetailActivity::class.java).apply {
@@ -87,6 +97,14 @@ class MyPageFragment : Fragment() {
             val updatedJsonObject = JSONObject(updatedJsonString)
             reviews.clear() // 기존 데이터를 삭제
             reviews.addAll(updatedJsonObject.getJSONArray("reviews").toMutableList())
+            reviews.sortBy { it.optString("date") }
+
+
+            val performanceNumber = getPerformanceNumber()
+            val exhibitionNumber = reviews.size - performanceNumber
+
+            binding.performanceNumberText.text = "$performanceNumber"
+            binding.exhibitionNumberText.text = "$exhibitionNumber"
 
             // 어댑터에 데이터 갱신 알림
             adapter.notifyDataSetChanged()
@@ -142,5 +160,21 @@ class MyPageFragment : Fragment() {
         } catch (e: Exception) {
             Log.e("MyPageFragment", "JSON 파일 저장 중 오류 발생: ${e.message}")
         }
+    }
+
+    private fun getPerformanceNumber(): Int {
+        var num = 0
+        // 이벤트 데이터를 맵으로 변환하여 검색 속도 개선
+        val eventMap = events.associateBy { it.getInt("event_id") }
+
+        for (review in reviews) {
+            val reviewId = review.getInt("review_id")
+            val event = eventMap[reviewId]
+            if (event != null && event.getString("category") == "공연") {
+                num++
+            }
+        }
+
+        return num
     }
 }

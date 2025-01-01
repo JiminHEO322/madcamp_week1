@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.view.View
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,7 @@ import com.example.exhibition.ui.event.EventItem
 import com.example.exhibition.ui.event.EventDetailActivity
 import org.json.JSONObject
 import org.json.JSONArray
+import java.io.File
 import java.io.InputStream
 
 
@@ -27,6 +29,8 @@ class PlaceDetailActivity : AppCompatActivity() {
     private lateinit var eventRecyclerView: RecyclerView
     private lateinit var eventAdapter: EventAdapter
 
+    private lateinit var likeImageView: ImageView
+
     private var phone: String? = null
     private var url: String? = null
     private var instagram: String? = null
@@ -34,6 +38,9 @@ class PlaceDetailActivity : AppCompatActivity() {
     private var isLike: Boolean = false
     private var venue_id: Int = -1
     private var venues = JSONArray()
+
+    private val fileName: String = "exhibition_data.json"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,12 +80,35 @@ class PlaceDetailActivity : AppCompatActivity() {
 
             initializeEventRecyclerView(exListString)
 
+            likeImageView = findViewById<ImageView>(R.id.detailLikeImageView)
+            likeImageView.setOnClickListener{
+                toggleState(venue_id)
+            }
+
 
         } else {
             Toast.makeText(this, "장소 데이터를 로드할 수 없습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
+    private fun toggleState(venueId: Int){
+        for (i in 0 until venues.length()){
+            val venue = venues.getJSONObject(i)
+            if (venue.getInt("venue_id") == venueId) {
+                val currentLikeState = venue.getBoolean("isLike")
+                val newLikeState = !currentLikeState
+                venue.put("isLike", newLikeState)
+
+                isLike = newLikeState
+                likeImageView.setImageResource(if (isLike) R.drawable.icon_fulllike else R.drawable.icon_like)
+
+                saveUpdatedJSON()
+                Log.d("PlaceDetailActivity", "좋아요 상태 변경 및 저장 완료: ${venue.toString(2)}")
+
+                break
+            }
+        }
+    }
     private fun initializeEventRecyclerView(exListString: String?){
         // Event RecyclerView 초기화
         eventRecyclerView = findViewById(R.id.eventRecyclerView)
@@ -142,6 +172,79 @@ class PlaceDetailActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    private fun initializeDefaultJSON(context: Context): String? {
+        val file = File(context.filesDir, fileName)
+        if (!file.exists()) {
+            try {
+                val inputStream: InputStream = context.assets.open(fileName)
+                val size = inputStream.available()
+                val buffer = ByteArray(size)
+                inputStream.read(buffer)
+                inputStream.close()
+
+                val defaultJson = String(buffer, Charsets.UTF_8)
+                saveJSONToFile(context, defaultJson) // 파일 저장
+                Log.d("EventFragment", "기본 JSON 파일 생성 완료")
+                return defaultJson
+            } catch (e: Exception) {
+                Log.e("EventFragment", "기본 JSON 파일 초기화 중 오류 발생: ${e.message}")
+            }
+        }
+        return loadJSON(context) // 파일이 있으면 로드
+    }
+
+    private fun loadJSON(context: Context): String? {
+        return try {
+            val file = File(context.filesDir, fileName)
+            if (file.exists()) {
+                val jsonData = file.readText()
+                Log.d("EventFragment", "로드된 JSON 데이터: $jsonData") // 확인용 로그
+                jsonData
+            } else {
+                Log.w("EventFragment", "JSON 파일이 존재하지 않습니다.")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("EventFragment", "JSON 로드 중 오류 발생: ${e.message}")
+            null
+        }
+    }
+
+    private fun saveUpdatedJSON() {
+        try {
+            // 기존 JSON 데이터 읽기
+            val jsonString = loadJSON(this)
+            val jsonObject = if (jsonString != null) {
+                JSONObject(jsonString)
+            } else {
+                JSONObject().apply {
+                    put("venues", JSONArray())
+                    put("events", JSONArray())
+                    put("reviews", JSONArray())
+                }
+            }
+
+            jsonObject.put("venues", venues)
+
+            // 파일에 저장
+            saveJSONToFile(this, jsonObject.toString())
+            Log.d("EventFragment", "JSON 업데이트 완료: ${jsonObject.toString(2)}") // 확인용 로그
+        } catch (e: Exception) {
+            Log.e("EventFragment", "JSON 업데이트 중 오류 발생: ${e.message}")
+            Toast.makeText(this, "데이터 저장 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveJSONToFile(context: Context, jsonString: String) {
+        try {
+            val file = File(context.filesDir, fileName)
+            file.writeText(jsonString)
+            Log.d("EventFragment", "JSON 파일 저장 완료: ${file.absolutePath}")
+        } catch (e: Exception) {
+            Log.e("EventFragment", "JSON 파일 저장 중 오류 발생: ${e.message}")
+        }
     }
 
 }

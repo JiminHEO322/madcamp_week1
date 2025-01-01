@@ -1,17 +1,18 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="7dp"
     app:cardElevation="10dp"
-    app:cardCornerRadius="12dp">
+    app:cardCornerRadius="4dp"
+    >
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="8dp"
-    android:background="@drawable/silver_background"
+    android:background="@color/background_color"
     android:layout_marginBottom="0dp">
 
     <!-- 장소 이미지 -->
@@ -37,63 +38,90 @@
         android:layout_height="80dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:paddingLeft="8dp">
+        android:layout_marginLeft="8dp">
 
-        <TextView
-            android:id="@+id/titleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="14dp"
-            android:text="예술의 전당"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="29dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/likeImageView"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="2dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_like" />
+
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_gravity="center_vertical"
+                android:text="예술의 전당"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
+
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:src="@drawable/location" />
+                android:padding="3dp"
+                android:src="@drawable/location_white" />
+
             <TextView
                 android:id="@+id/addressTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:text="서울특별시 서초구"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:layout_marginTop="2dp"/>
+                android:textColor="@color/white"
+                android:textSize="14sp" />
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp">
+
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/phone"
-                android:layout_marginLeft="1dp" />
+                android:layout_marginLeft="1dp"
+                android:padding="3dp"
+                android:src="@drawable/call" />
+
             <TextView
                 android:id="@+id/phoneTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1668-1352"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
                 android:layout_marginLeft="4dp"
-                android:layout_marginTop="2dp"/>
+                android:layout_marginTop="2dp"
+                android:text="1668-1352"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
         </LinearLayout>
+
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
          android:layout_height="80dp"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="4dp"
+        >
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -102,8 +130,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:gravity="center"
+                android:layout_gravity="end"
                 android:text="진행 중 "
-                android:textColor="@android:color/black"
+                android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
             <TextView
@@ -112,21 +141,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="1dp"
                 android:layout_marginTop="2dp"
+                android:layout_gravity="end"
                 android:gravity="center"
                 android:text="112"
                 android:textColor="@android:color/holo_red_dark"
-                android:textSize="20sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/likeImageView"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:scaleType="centerCrop"
-            android:layout_marginLeft="45dp"
-            android:layout_marginTop="24dp"
-            android:src="@drawable/icon_like" />
+
     </LinearLayout>
 </LinearLayout>
 </androidx.cardview.widget.CardView>
